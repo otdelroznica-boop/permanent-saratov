@@ -267,9 +267,10 @@
     /* ── GALLERY / CAROUSEL ── */
     #gallery { background: var(--bg2); }
     #my-works { background: var(--bg); }
-    .carousel-wrap { position: relative; overflow: hidden; }
+    /* overflow-x:clip clips scroll but allows vertical overflow for scale transform */
+    .carousel-wrap { position: relative; overflow-x: clip; overflow-y: visible; padding: 16px 0; }
     .carousel-wrap::before, .carousel-wrap::after {
-      content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
     }
     .carousel-wrap::before { left: 0; background: linear-gradient(to right, var(--bg2), transparent); }
     .carousel-wrap::after  { right: 0; background: linear-gradient(to left,  var(--bg2), transparent); }
@@ -277,11 +278,11 @@
     #gallery .carousel-wrap::after   { background: linear-gradient(to left,  var(--bg2), transparent); }
     #my-works .carousel-wrap::before { background: linear-gradient(to right, var(--bg), transparent); }
     #my-works .carousel-wrap::after  { background: linear-gradient(to left,  var(--bg), transparent); }
-    #process .carousel-wrap::before  { background: linear-gradient(to right, var(--bg), transparent); }
-    #process .carousel-wrap::after   { background: linear-gradient(to left,  var(--bg), transparent); }
+    #process .carousel-wrap::before  { background: linear-gradient(to right, var(--bg2), transparent); }
+    #process .carousel-wrap::after   { background: linear-gradient(to left,  var(--bg2), transparent); }
     .carousel {
       display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
-      gap: 16px; padding: 20px 80px 28px; scrollbar-width: none; cursor: grab;
+      gap: 16px; padding: 8px 80px 12px; scrollbar-width: none; cursor: grab;
     }
     .carousel:active { cursor: grabbing; }
     .carousel::-webkit-scrollbar { display: none; }
@@ -289,46 +290,90 @@
       flex: 0 0 260px; scroll-snap-align: center;
       border-radius: 16px; overflow: hidden; background: #e8ddd0;
       aspect-ratio: 3/4; position: relative;
-      transform: scale(0.9); opacity: 0.65;
-      transition: transform .4s cubic-bezier(.25,.8,.25,1), opacity .4s, box-shadow .4s;
-      will-change: transform;
+      transform: scale(0.88); opacity: 0.6;
+      transition: transform .35s cubic-bezier(.25,.8,.25,1), opacity .35s, box-shadow .35s;
+      will-change: transform; cursor: pointer;
     }
     .carousel-item.active {
-      transform: scale(1.05); opacity: 1;
-      box-shadow: 0 16px 48px rgba(0,0,0,.2);
+      transform: scale(1.06); opacity: 1;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
     }
+    .carousel-item:hover { opacity: 0.85; }
+    .carousel-item.active:hover { transform: scale(1.08); }
     .carousel-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .carousel-item .item-actions {
       position: absolute; bottom: 0; left: 0; right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,.55));
-      padding: 30px 14px 14px; display: flex; gap: 10px; opacity: 0; transition: opacity .3s;
+      background: linear-gradient(transparent, rgba(0,0,0,.6));
+      padding: 36px 14px 14px; display: flex; gap: 8px; align-items: center;
+      opacity: 0; transition: opacity .25s; pointer-events: none;
     }
-    .carousel-item.active .item-actions, .carousel-item:hover .item-actions { opacity: 1; }
+    .carousel-item.active .item-actions { opacity: 1; pointer-events: all; }
     .action-btn {
       display: flex; align-items: center; gap: 5px;
-      background: rgba(255,255,255,.18); backdrop-filter: blur(6px);
-      border: 1px solid rgba(255,255,255,.3); border-radius: 20px;
-      color: #fff; font-size: 0.8rem; padding: 5px 12px; cursor: pointer;
-      font-family: Arial, sans-serif; transition: background .2s;
+      background: rgba(255,255,255,.2); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.35); border-radius: 20px;
+      color: #fff; font-size: 0.8rem; padding: 6px 13px; cursor: pointer;
+      font-family: Arial, sans-serif; transition: background .2s; white-space: nowrap;
     }
-    .action-btn:hover, .action-btn.liked { background: rgba(255,255,255,.32); }
-    .action-btn.liked .heart { filter: saturate(5); }
-    .carousel-nav {
-      display: flex; justify-content: center; gap: 6px; margin-top: 8px;
-    }
+    .action-btn:hover { background: rgba(255,255,255,.35); }
+    .action-btn.liked .heart { filter: none; }
+    .comment-btn { margin-left: auto; }
+    .carousel-nav { display: flex; justify-content: center; gap: 6px; margin-top: 4px; }
     .carousel-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #ccc; transition: .3s; cursor: pointer;
+      width: 6px; height: 6px; border-radius: 50%; background: #ccc; transition: .3s; cursor: pointer;
     }
     .carousel-dot.active { background: var(--gold); width: 20px; border-radius: 3px; }
-    /* VK COMMENTS */
-    #vk-section { background: var(--bg2); }
-    .vk-placeholder {
-      max-width: 640px; margin: 0 auto; text-align: center;
-      background: #f0f2f5; border-radius: 12px; padding: 32px;
-      font-family: Arial, sans-serif; color: #666;
+    /* LIGHTBOX */
+    .lightbox-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 10000;
+      display: flex; flex-direction: column; align-items: center;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
     }
-    .vk-placeholder a { color: var(--gold); }
+    .lightbox-overlay.open { opacity: 1; pointer-events: all; }
+    .lightbox-header {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; flex-shrink: 0;
+    }
+    .lightbox-title { color: #ccc; font-family: Arial, sans-serif; font-size: 0.85rem; }
+    .lightbox-close {
+      background: rgba(255,255,255,.12); border: none; color: #fff;
+      width: 38px; height: 38px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: background .2s;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,.25); }
+    .lightbox-body {
+      flex: 1; width: 100%; display: flex; flex-direction: column;
+      overflow-y: auto; align-items: center; padding: 0 16px 24px;
+    }
+    .lightbox-img-wrap {
+      max-width: 500px; width: 100%; flex-shrink: 0;
+      border-radius: 16px; overflow: hidden; position: relative;
+    }
+    .lightbox-img-wrap img { width: 100%; display: block; }
+    .lightbox-img-actions {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,.6));
+      padding: 30px 14px 14px; display: flex; gap: 8px;
+    }
+    .lightbox-comments {
+      max-width: 500px; width: 100%; margin-top: 20px;
+      background: #fff; border-radius: 12px; overflow: hidden; min-height: 120px;
+    }
+    .lightbox-nav {
+      display: flex; gap: 16px; align-items: center; margin: 12px 0;
+    }
+    .lightbox-nav button {
+      background: rgba(255,255,255,.12); border: none; color: #fff;
+      width: 44px; height: 44px; border-radius: 50%; font-size: 1.3rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: background .2s;
+    }
+    .lightbox-nav button:hover { background: rgba(255,255,255,.25); }
+    .lightbox-counter { color: #888; font-family: Arial, sans-serif; font-size: 0.85rem; }
+    /* VK COMMENTS placeholder in lightbox */
+    .vk-placeholder-lb {
+      padding: 24px; text-align: center; font-family: Arial, sans-serif; color: #888; font-size: 0.83rem;
+    }
+    .vk-placeholder-lb a { color: var(--gold); }
     /* PARTICLES CANVAS */
     #particles-canvas {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -661,18 +706,27 @@
   <div class="carousel-nav" id="dots-process"></div>
 </section>
 
-<!-- VK COMMENTS -->
-<section id="vk-section">
-  <h2 class="section-title">Комментарии</h2>
-  <p class="section-sub">Оставьте комментарий через ВКонтакте</p>
-  <div style="max-width:700px;margin:0 auto;" id="vk-comments-wrap">
-    <div id="vk_comments"></div>
-    <div class="vk-placeholder" id="vk-placeholder" style="display:none;">
-      <p style="font-size:1.1rem;margin-bottom:8px;">💬 Комментарии через ВКонтакте</p>
-      <p style="font-size:0.85rem;margin-top:8px;">Для активации нужен <strong>VK App ID</strong>.<br>Создайте приложение на <a href="https://vk.com/editapp?act=create" target="_blank">vk.com/editapp</a> → «Встраиваемое приложение» → укажите домен <strong>permanent-saratov.ru</strong>. Затем введите App ID в Панели управления → Настройки.</p>
-    </div>
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox">
+  <div class="lightbox-header">
+    <span class="lightbox-title" id="lb-title"></span>
+    <button class="lightbox-close" id="lb-close">✕</button>
   </div>
-</section>
+  <div class="lightbox-body">
+    <div class="lightbox-nav">
+      <button id="lb-prev">‹</button>
+      <span class="lightbox-counter" id="lb-counter"></span>
+      <button id="lb-next">›</button>
+    </div>
+    <div class="lightbox-img-wrap">
+      <img id="lb-img" src="" alt="">
+      <div class="lightbox-img-actions">
+        <button class="action-btn" id="lb-like-btn"><span class="heart">🤍</span><span id="lb-like-count">0</span></button>
+      </div>
+    </div>
+    <div class="lightbox-comments" id="lb-comments"></div>
+  </div>
+</div>
 
 <!-- REVIEWS -->
 <section id="reviews">
@@ -874,6 +928,127 @@
     });
   });
 
+  // ── LIKES ───────────────────────────────────────────────
+  const LIKES_KEY = 'janna_likes';
+  const likes = JSON.parse(localStorage.getItem(LIKES_KEY) || '{}');
+  function saveLikes() { localStorage.setItem(LIKES_KEY, JSON.stringify(likes)); }
+  function getLike(key) { return likes[key] || { count: 0, liked: false }; }
+  function toggleLike(key) {
+    if (!likes[key]) likes[key] = { count: 0, liked: false };
+    if (likes[key].liked) { likes[key].liked = false; likes[key].count = Math.max(0, likes[key].count - 1); }
+    else { likes[key].liked = true; likes[key].count++; }
+    saveLikes();
+    return likes[key];
+  }
+
+  // ── VK SDK ──────────────────────────────────────────────
+  let vkReady = false;
+  let vkAppId = null;
+  (function loadVK() {
+    const s = JSON.parse(localStorage.getItem('janna_site') || '{}');
+    vkAppId = s.vk_app_id ? parseInt(s.vk_app_id) : null;
+    if (!vkAppId) return;
+    const sc = document.createElement('script');
+    sc.src = 'https://vk.com/js/api/openapi.js?169';
+    sc.onload = () => { VK.init({ apiId: vkAppId }); vkReady = true; };
+    document.head.appendChild(sc);
+  })();
+
+  // ── LIGHTBOX ────────────────────────────────────────────
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbTitle = document.getElementById('lb-title');
+  const lbCounter = document.getElementById('lb-counter');
+  const lbComments = document.getElementById('lb-comments');
+  const lbLikeBtn = document.getElementById('lb-like-btn');
+  const lbLikeCount = document.getElementById('lb-like-count');
+  let lbItems = [], lbIdx = 0, lbCurrentKey = '';
+
+  function openLightbox(items, idx) {
+    lbItems = items; lbIdx = idx;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    showLbItem(lbIdx);
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbComments.innerHTML = '';
+  }
+
+  function showLbItem(i) {
+    lbIdx = (i + lbItems.length) % lbItems.length;
+    const item = lbItems[lbIdx];
+    lbCurrentKey = item.dataset.key;
+    const img = item.querySelector('img');
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    lbTitle.textContent = img.alt || '';
+    lbCounter.textContent = `${lbIdx + 1} / ${lbItems.length}`;
+    // Update like state
+    const lk = getLike(lbCurrentKey);
+    lbLikeCount.textContent = lk.count;
+    lbLikeBtn.querySelector('.heart').textContent = lk.liked ? '❤️' : '🤍';
+    lbLikeBtn.classList.toggle('liked', lk.liked);
+    // Load VK comments
+    lbComments.innerHTML = '';
+    const divId = 'vk_lb_comments';
+    const div = document.createElement('div');
+    div.id = divId;
+    lbComments.appendChild(div);
+    if (vkReady && vkAppId) {
+      requestAnimationFrame(() => {
+        VK.Widgets.Comments(divId, { limit: 5, pageId: 'photo_' + lbCurrentKey, attach: '*', width: Math.min(500, window.innerWidth - 32) });
+      });
+    } else {
+      div.innerHTML = `<div class="vk-placeholder-lb">💬 Комментарии через ВКонтакте<br><span style="font-size:.78rem;margin-top:6px;display:block;">Для активации введите VK App ID в <a href="admin.html">Панели управления</a> → Настройки</span></div>`;
+    }
+  }
+
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+  document.getElementById('lb-prev').addEventListener('click', () => showLbItem(lbIdx - 1));
+  document.getElementById('lb-next').addEventListener('click', () => showLbItem(lbIdx + 1));
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showLbItem(lbIdx - 1);
+    if (e.key === 'ArrowRight') showLbItem(lbIdx + 1);
+  });
+
+  // Lightbox swipe
+  let lbTouchX = 0;
+  lb.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - lbTouchX;
+    if (Math.abs(dx) > 50) showLbItem(lbIdx + (dx < 0 ? 1 : -1));
+  });
+
+  // Lightbox like button
+  lbLikeBtn.addEventListener('click', () => {
+    const lk = toggleLike(lbCurrentKey);
+    lbLikeCount.textContent = lk.count;
+    lbLikeBtn.querySelector('.heart').textContent = lk.liked ? '❤️' : '🤍';
+    lbLikeBtn.classList.toggle('liked', lk.liked);
+    if (lk.liked) spawnHearts(lbLikeBtn);
+    // sync carousel card
+    const card = document.querySelector(`.carousel-item[data-key="${lbCurrentKey}"] .like-btn`);
+    if (card) { card.querySelector('.heart').textContent = lk.liked ? '❤️' : '🤍'; card.querySelector('.like-count').textContent = lk.count; card.classList.toggle('liked', lk.liked); }
+  });
+
+  function spawnHearts(btn) {
+    const rect = btn.getBoundingClientRect();
+    for (let i = 0; i < 6; i++) {
+      const h = document.createElement('div');
+      h.textContent = '❤️';
+      const tx = (Math.random() - .5) * 60;
+      h.style.cssText = `position:fixed;left:${rect.left+rect.width/2}px;top:${rect.top}px;font-size:${12+Math.random()*14}px;pointer-events:none;z-index:10001;animation:floatHeart .8s ease forwards;--tx:${tx}px`;
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 900);
+    }
+  }
+
   // ── CAROUSEL ────────────────────────────────────────────
   function initCarousel(carouselId, dotsId) {
     const carousel = document.getElementById(carouselId);
@@ -882,7 +1057,6 @@
     const items = Array.from(carousel.querySelectorAll('.carousel-item'));
     if (!items.length) return;
 
-    // Build dots
     items.forEach((_, i) => {
       const dot = document.createElement('div');
       dot.className = 'carousel-dot';
@@ -890,11 +1064,40 @@
       dotsContainer.appendChild(dot);
     });
 
+    // Init like buttons on cards
+    items.forEach(item => {
+      const key = item.dataset.key;
+      const btn = item.querySelector('.like-btn');
+      if (!btn) return;
+      const lk = getLike(key);
+      btn.querySelector('.like-count').textContent = lk.count;
+      btn.querySelector('.heart').textContent = lk.liked ? '❤️' : '🤍';
+      btn.classList.toggle('liked', lk.liked);
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const lk2 = toggleLike(key);
+        btn.querySelector('.like-count').textContent = lk2.count;
+        btn.querySelector('.heart').textContent = lk2.liked ? '❤️' : '🤍';
+        btn.classList.toggle('liked', lk2.liked);
+        if (lk2.liked) spawnHearts(btn);
+      });
+    });
+
+    // Open lightbox on click
+    items.forEach((item, i) => {
+      item.addEventListener('click', e => {
+        if (e.target.closest('.like-btn')) return;
+        openLightbox(items, i);
+      });
+    });
+
     function getActiveIndex() {
-      const cx = carousel.scrollLeft + carousel.offsetWidth / 2;
+      const cRect = carousel.getBoundingClientRect();
+      const cx = cRect.left + cRect.width / 2;
       let closest = 0, minDist = Infinity;
       items.forEach((item, i) => {
-        const dist = Math.abs(item.offsetLeft + item.offsetWidth / 2 - cx);
+        const r = item.getBoundingClientRect();
+        const dist = Math.abs(r.left + r.width / 2 - cx);
         if (dist < minDist) { minDist = dist; closest = i; }
       });
       return closest;
@@ -908,21 +1111,23 @@
 
     function scrollToItem(i) {
       const item = items[i];
-      const target = item.offsetLeft - (carousel.offsetWidth - item.offsetWidth) / 2;
-      carousel.scrollTo({ left: target, behavior: 'smooth' });
+      const r = item.getBoundingClientRect();
+      const cr = carousel.getBoundingClientRect();
+      const offset = r.left - cr.left - (cr.width - r.width) / 2;
+      carousel.scrollBy({ left: offset, behavior: 'smooth' });
     }
 
     carousel.addEventListener('scroll', update, { passive: true });
-    setTimeout(() => { scrollToItem(0); update(); }, 100);
+    // Use IntersectionObserver as backup for initial state
+    setTimeout(() => { scrollToItem(0); setTimeout(update, 400); }, 150);
 
-    // Drag-to-scroll (desktop)
-    let isDown = false, startX, scrollLeft;
-    carousel.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - carousel.offsetLeft; scrollLeft = carousel.scrollLeft; carousel.style.cursor = 'grabbing'; });
-    carousel.addEventListener('mouseleave', () => { isDown = false; carousel.style.cursor = 'grab'; });
-    carousel.addEventListener('mouseup', () => { isDown = false; carousel.style.cursor = 'grab'; });
+    // Drag on desktop
+    let isDown = false, startX, sl;
+    carousel.addEventListener('mousedown', e => { isDown = true; startX = e.pageX; sl = carousel.scrollLeft; carousel.style.cursor = 'grabbing'; });
+    document.addEventListener('mouseup', () => { isDown = false; carousel.style.cursor = 'grab'; });
     carousel.addEventListener('mousemove', e => {
       if (!isDown) return; e.preventDefault();
-      carousel.scrollLeft = scrollLeft - (e.pageX - carousel.offsetLeft - startX);
+      carousel.scrollLeft = sl - (e.pageX - startX);
     });
   }
 
@@ -930,108 +1135,46 @@
   initCarousel('carousel-works', 'dots-works');
   initCarousel('carousel-process', 'dots-process');
 
-  // ── LIKES (localStorage, no backend) ────────────────────
-  const LIKES_KEY = 'janna_likes';
-  const likes = JSON.parse(localStorage.getItem(LIKES_KEY) || '{}');
-
-  function saveLikes() { localStorage.setItem(LIKES_KEY, JSON.stringify(likes)); }
-
-  document.querySelectorAll('.like-btn').forEach(btn => {
-    const item = btn.closest('.carousel-item');
-    const key = item.dataset.key;
-    if (!likes[key]) likes[key] = { count: 0, liked: false };
-    btn.querySelector('.like-count').textContent = likes[key].count;
-    if (likes[key].liked) { btn.classList.add('liked'); btn.querySelector('.heart').textContent = '❤️'; }
-
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      if (likes[key].liked) {
-        likes[key].liked = false; likes[key].count = Math.max(0, likes[key].count - 1);
-        btn.classList.remove('liked'); btn.querySelector('.heart').textContent = '🤍';
-      } else {
-        likes[key].liked = true; likes[key].count++;
-        btn.classList.add('liked'); btn.querySelector('.heart').textContent = '❤️';
-        spawnHearts(btn);
-      }
-      btn.querySelector('.like-count').textContent = likes[key].count;
-      saveLikes();
-    });
-  });
-
-  function spawnHearts(btn) {
-    const rect = btn.getBoundingClientRect();
-    for (let i = 0; i < 6; i++) {
-      const h = document.createElement('div');
-      h.textContent = '❤️';
-      h.style.cssText = `position:fixed;left:${rect.left + rect.width/2}px;top:${rect.top}px;font-size:${12+Math.random()*14}px;pointer-events:none;z-index:9999;animation:floatHeart .8s ease forwards;transform:translateX(${(Math.random()-.5)*60}px)`;
-      document.body.appendChild(h);
-      setTimeout(() => h.remove(), 900);
-    }
-  }
-
-  // ── PARTICLES: stars + lips on scroll ───────────────────
+  // ── PARTICLES ───────────────────────────────────────────
   const canvas = document.getElementById('particles-canvas');
   const ctx = canvas.getContext('2d');
-  let particles = [];
-  let particleVisible = false;
-  let lastScrollY = 0;
-  let scrollSpeed = 0;
-  let particleTimer = null;
+  let particles = [], particleVisible = false, lastScrollY = 0;
 
   function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
 
-  // Lip path (simplified)
-  function drawLip(ctx, x, y, size, color) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(size / 20, size / 20);
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(-10, -8, -20, -4, -20, 2);
-    ctx.bezierCurveTo(-20, 10, -10, 14, 0, 10);
-    ctx.bezierCurveTo(10, 14, 20, 10, 20, 2);
-    ctx.bezierCurveTo(20, -4, 10, -8, 0, 0);
-    ctx.fill();
-    ctx.restore();
+  function drawLip(cx, x, y, size, color) {
+    cx.save(); cx.translate(x, y); cx.scale(size/20, size/20); cx.fillStyle = color;
+    cx.beginPath(); cx.moveTo(0,0);
+    cx.bezierCurveTo(-10,-8,-20,-4,-20,2); cx.bezierCurveTo(-20,10,-10,14,0,10);
+    cx.bezierCurveTo(10,14,20,10,20,2); cx.bezierCurveTo(20,-4,10,-8,0,0);
+    cx.fill(); cx.restore();
   }
 
   function spawnParticle() {
-    const isLip = Math.random() > 0.4;
+    const isLip = Math.random() > 0.45;
     particles.push({
-      x: Math.random() * canvas.width,
-      y: canvas.height + 20,
-      vx: (Math.random() - .5) * 1.5,
-      vy: -(1.5 + Math.random() * 2.5),
-      size: isLip ? 8 + Math.random() * 14 : 3 + Math.random() * 5,
-      alpha: 0.7 + Math.random() * .3,
-      rot: Math.random() * Math.PI * 2,
-      rotV: (Math.random() - .5) * .05,
-      isLip,
-      color: isLip
-        ? `hsl(${340 + Math.random() * 30}, 70%, ${50 + Math.random() * 20}%)`
-        : `hsl(${40 + Math.random() * 20}, 80%, ${70 + Math.random() * 15}%)`
+      x: Math.random()*canvas.width, y: canvas.height+20,
+      vx: (Math.random()-.5)*1.5, vy: -(1.5+Math.random()*2.5),
+      size: isLip ? 8+Math.random()*14 : 3+Math.random()*5,
+      alpha: 0.75+Math.random()*.25, rot: Math.random()*Math.PI*2,
+      rotV: (Math.random()-.5)*.05, isLip,
+      color: isLip ? `hsl(${340+Math.random()*25},70%,${50+Math.random()*20}%)` : `hsl(${40+Math.random()*20},80%,${65+Math.random()*20}%)`
     });
   }
 
   function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles = particles.filter(p => p.alpha > 0.02 && p.y > -40);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles = particles.filter(p => p.alpha > 0.02 && p.y > -50);
     particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.rot += p.rotV; p.alpha -= 0.008;
+      p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.rot += p.rotV; p.alpha -= 0.007;
       ctx.globalAlpha = p.alpha;
-      if (p.isLip) {
-        drawLip(ctx, p.x, p.y, p.size, p.color);
-      } else {
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        ctx.fillStyle = p.color;
-        ctx.font = `${p.size * 2}px serif`;
-        ctx.fillText('✦', -p.size / 2, p.size / 2);
-        ctx.restore();
+      if (p.isLip) { drawLip(ctx, p.x, p.y, p.size, p.color); }
+      else {
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = p.color; ctx.font = `${p.size*2}px serif`;
+        ctx.fillText('✦', -p.size/2, p.size/2); ctx.restore();
       }
     });
     ctx.globalAlpha = 1;
@@ -1039,40 +1182,21 @@
     else { canvas.classList.remove('visible'); particleVisible = false; }
   }
 
-  function triggerParticles(count) {
-    if (!particleVisible) { particleVisible = true; canvas.classList.add('visible'); animateParticles(); }
-    for (let i = 0; i < count; i++) setTimeout(spawnParticle, i * 40);
-    clearTimeout(particleTimer);
-    particleTimer = setTimeout(() => {}, 500);
-  }
-
   window.addEventListener('scroll', () => {
-    scrollSpeed = Math.abs(window.scrollY - lastScrollY);
+    const speed = Math.abs(window.scrollY - lastScrollY);
     lastScrollY = window.scrollY;
-    if (scrollSpeed > 30) triggerParticles(Math.min(8, Math.floor(scrollSpeed / 10)));
+    if (speed > 28) {
+      if (!particleVisible) { particleVisible = true; canvas.classList.add('visible'); animateParticles(); }
+      const count = Math.min(8, Math.floor(speed/8));
+      for (let i = 0; i < count; i++) setTimeout(spawnParticle, i*35);
+    }
   }, { passive: true });
-
-  // ── VK COMMENTS ─────────────────────────────────────────
-  (function initVK() {
-    const s = JSON.parse(localStorage.getItem('janna_site') || '{}');
-    const appId = s.vk_app_id;
-    const wrap = document.getElementById('vk-comments-wrap');
-    const placeholder = document.getElementById('vk-placeholder');
-    if (!appId) { placeholder.style.display = 'block'; return; }
-    const script = document.createElement('script');
-    script.src = 'https://vk.com/js/api/openapi.js?169';
-    script.onload = () => {
-      VK.init({ apiId: parseInt(appId) });
-      VK.Widgets.Comments('vk_comments', { limit: 10, attach: 'photo', autoPublish: 0 });
-    };
-    document.head.appendChild(script);
-  })();
 </script>
 
 <style>
 @keyframes floatHeart {
-  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 1; }
-  100% { transform: translateY(-80px) translateX(var(--tx, 0)) scale(0.5); opacity: 0; }
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-80px) translateX(var(--tx,0)) scale(0.4); opacity: 0; }
 }
 </style>
 
