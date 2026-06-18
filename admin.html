@@ -573,6 +573,14 @@
       <label class="field-label">Репозиторий</label>
       <input class="field-input" id="gh-repo" value="permanent-saratov">
     </div>
+    <div style="margin-top:28px;margin-bottom:12px;font-size:1rem;font-weight:bold;color:#c9a84c;">💬 Комментарии ВКонтакте</div>
+    <div class="settings-note">
+      Создайте приложение на <a href="https://vk.com/editapp?act=create" target="_blank" style="color:#c9a84c;">vk.com/editapp</a> → «Встраиваемое приложение» → укажите домен <strong>permanent-saratov.ru</strong>. Скопируйте ID приложения и вставьте ниже.
+    </div>
+    <div class="settings-field">
+      <label class="field-label">VK App ID (для комментариев)</label>
+      <input class="field-input" id="vk-app-id" placeholder="12345678">
+    </div>
     <button class="save-btn" id="saveSettingsBtn" style="max-width:220px;margin-top:8px;">Сохранить настройки</button>
     <div style="margin-top:16px;font-size:.8rem;color:#555;">После сохранения кнопка «🚀 Опубликовать» будет обновлять сайт за 1–2 минуты.</div>
   </div>
@@ -926,14 +934,19 @@ function loadGhSettings() {
   const t = localStorage.getItem('gh_token');
   const o = localStorage.getItem('gh_owner') || 'otdelroznica-boop';
   const r = localStorage.getItem('gh_repo') || 'permanent-saratov';
+  const v = JSON.parse(localStorage.getItem('janna_site') || '{}').vk_app_id || '';
   if (t) document.getElementById('gh-token').value = t;
   document.getElementById('gh-owner').value = o;
   document.getElementById('gh-repo').value = r;
+  document.getElementById('vk-app-id').value = v;
 }
 document.getElementById('saveSettingsBtn').addEventListener('click', () => {
   localStorage.setItem('gh_token', document.getElementById('gh-token').value.trim());
   localStorage.setItem('gh_owner', document.getElementById('gh-owner').value.trim());
   localStorage.setItem('gh_repo', document.getElementById('gh-repo').value.trim());
+  const s = JSON.parse(localStorage.getItem('janna_site') || '{}');
+  s.vk_app_id = document.getElementById('vk-app-id').value.trim();
+  localStorage.setItem('janna_site', JSON.stringify(s));
   showToast('✓ Настройки сохранены');
 });
 
