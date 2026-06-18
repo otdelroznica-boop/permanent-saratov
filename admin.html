@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель управления — Жанна</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #0f0f0f; color: #e0e0e0; display: flex; height: 100vh; overflow: hidden; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px; min-width: 220px; background: #1a1a1a; display: flex;
+      flex-direction: column; padding: 20px 0; border-right: 1px solid #2a2a2a;
+    }
+    .sidebar-logo {
+      padding: 0 20px 20px; font-size: 1rem; font-weight: bold;
+      color: #c9a84c; border-bottom: 1px solid #2a2a2a; margin-bottom: 12px;
+    }
+    .sidebar-logo span { display: block; font-size: 0.72rem; color: #666; font-weight: normal; margin-top: 2px; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      padding: 11px 20px; background: none; border: none; color: #aaa;
+      font-size: 0.88rem; cursor: pointer; text-align: left; transition: .15s;
+    }
+    .nav-btn:hover { background: #242424; color: #e0e0e0; }
+    .nav-btn.active { background: #2a2a2a; color: #c9a84c; border-left: 3px solid #c9a84c; }
+    .nav-btn .icon { font-size: 1rem; width: 20px; text-align: center; }
+    .sidebar-bottom { margin-top: auto; padding: 16px 20px; border-top: 1px solid #2a2a2a; }
+    .save-btn {
+      width: 100%; padding: 11px; background: #c9a84c; border: none; border-radius: 8px;
+      color: #1a1a1a; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: .15s;
+    }
+    .save-btn:hover { background: #e0c070; }
+    .open-site {
+      display: block; text-align: center; margin-top: 8px; padding: 8px;
+      background: #2a2a2a; border-radius: 8px; text-decoration: none;
+      color: #888; font-size: 0.8rem; transition: .15s;
+    }
+    .open-site:hover { color: #c9a84c; }
+
+    /* MAIN */
+    .main { flex: 1; overflow-y: auto; padding: 30px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .tab-title { font-size: 1.4rem; font-weight: bold; color: #e0e0e0; margin-bottom: 6px; }
+    .tab-sub { color: #666; font-size: 0.85rem; margin-bottom: 28px; }
+
+    /* TEMPLATES */
+    .templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .tpl-card {
+      border: 2px solid #2a2a2a; border-radius: 12px; overflow: hidden;
+      cursor: pointer; transition: .2s; position: relative;
+    }
+    .tpl-card:hover { border-color: #555; }
+    .tpl-card.selected { border-color: #c9a84c; }
+    .tpl-card.selected::after {
+      content: '✓'; position: absolute; top: 8px; right: 10px;
+      background: #c9a84c; color: #1a1a1a; width: 22px; height: 22px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 0.8rem;
+    }
+    .tpl-preview { height: 130px; position: relative; overflow: hidden; }
+    .tpl-mini-nav { height: 28px; display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+    .tpl-mini-dot { height: 6px; border-radius: 3px; }
+    .tpl-mini-hero { padding: 12px; }
+    .tpl-mini-h1 { height: 10px; border-radius: 4px; margin-bottom: 6px; width: 80%; }
+    .tpl-mini-p { height: 6px; border-radius: 3px; margin-bottom: 4px; width: 100%; opacity: .5; }
+    .tpl-mini-btn { height: 20px; border-radius: 10px; width: 100px; margin-top: 8px; }
+    .tpl-mini-cards { display: flex; gap: 6px; padding: 8px 12px; }
+    .tpl-mini-card { flex: 1; height: 28px; border-radius: 4px; opacity: .6; }
+    .tpl-info { padding: 12px 14px; background: #1e1e1e; }
+    .tpl-name { font-weight: bold; font-size: 0.9rem; }
+    .tpl-desc { font-size: 0.75rem; color: #666; margin-top: 2px; }
+
+    /* PHOTO UPLOAD */
+    .photo-section { margin-bottom: 36px; }
+    .photo-section-title { font-size: 1rem; font-weight: bold; color: #c9a84c; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #2a2a2a; }
+    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+    .photo-slot {
+      background: #1e1e1e; border: 2px dashed #333; border-radius: 10px;
+      aspect-ratio: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; cursor: pointer;
+      overflow: hidden; position: relative; transition: .2s;
+    }
+    .photo-slot:hover { border-color: #c9a84c; }
+    .photo-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+    .photo-slot-label {
+      font-size: 0.72rem; color: #555; text-align: center; padding: 8px; z-index: 1;
+      background: rgba(0,0,0,.6); position: absolute; bottom: 0; left: 0; right: 0;
+    }
+    .photo-slot .add-icon { font-size: 1.8rem; color: #333; margin-bottom: 4px; }
+    .photo-slot .add-text { font-size: 0.72rem; color: #555; }
+    .photo-slot input[type=file] { display: none; }
+    .photo-slot.has-img .add-icon, .photo-slot.has-img .add-text { display: none; }
+    .photo-slot-wide { aspect-ratio: 16/7; }
+
+    /* CONTENT EDITOR */
+    .field-group { margin-bottom: 22px; }
+    .field-label { font-size: 0.8rem; color: #888; margin-bottom: 6px; display: block; font-weight: bold; text-transform: uppercase; letter-spacing: .05em; }
+    .field-input, .field-textarea {
+      width: 100%; background: #1e1e1e; border: 1px solid #2a2a2a;
+      border-radius: 8px; padding: 10px 14px; color: #e0e0e0; font-size: 0.9rem;
+      font-family: Arial, sans-serif; transition: border .15s; outline: none;
+    }
+    .field-input:focus, .field-textarea:focus { border-color: #c9a84c; }
+    .field-textarea { resize: vertical; min-height: 90px; }
+    .section-divider { font-size: 1rem; font-weight: bold; color: #c9a84c; margin: 28px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2a2a2a; }
+    .services-grid-admin { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .service-card-admin { background: #1e1e1e; border-radius: 10px; padding: 16px; border: 1px solid #2a2a2a; }
+    .service-card-admin .field-input, .service-card-admin .field-textarea { background: #252525; }
+
+    /* EXPORT */
+    .export-box { background: #1e1e1e; border-radius: 12px; padding: 28px; max-width: 600px; }
+    .export-steps { margin: 20px 0; }
+    .export-step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+    .export-num { width: 28px; height: 28px; min-width: 28px; background: #c9a84c; color: #1a1a1a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; }
+    .export-text { font-size: 0.9rem; color: #aaa; line-height: 1.5; }
+    .export-text strong { color: #e0e0e0; }
+    .export-btn {
+      width: 100%; padding: 14px; background: #c9a84c; border: none; border-radius: 10px;
+      color: #1a1a1a; font-weight: bold; font-size: 1rem; cursor: pointer; transition: .15s; margin-top: 8px;
+    }
+    .export-btn:hover { background: #e0c070; }
+    .export-note { font-size: 0.8rem; color: #555; margin-top: 12px; }
+    .toast {
+      position: fixed; bottom: 30px; right: 30px; background: #c9a84c; color: #1a1a1a;
+      padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 0.9rem;
+      opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 9999;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    ✦ Панель управления
+    <span>permanent-saratov.ru</span>
+  </div>
+  <button class="nav-btn active" data-tab="templates"><span class="icon">🎨</span> Шаблоны</button>
+  <button class="nav-btn" data-tab="photos"><span class="icon">🖼</span> Фото</button>
+  <button class="nav-btn" data-tab="content"><span class="icon">✏️</span> Текст и услуги</button>
+  <button class="nav-btn" data-tab="contacts"><span class="icon">📞</span> Контакты</button>
+  <button class="nav-btn" data-tab="export"><span class="icon">📤</span> Экспорт сайта</button>
+  <div class="sidebar-bottom">
+    <button class="save-btn" id="saveBtn">💾 Сохранить</button>
+    <a href="index.html" target="_blank" class="open-site">↗ Открыть сайт</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TEMPLATES -->
+  <div class="tab-panel active" id="tab-templates">
+    <div class="tab-title">Выберите шаблон</div>
+    <div class="tab-sub">Нажмите на шаблон чтобы применить. Сохраните и откройте сайт для просмотра.</div>
+    <div class="templates-grid" id="templatesGrid">
+
+      <!-- ELEGANCE -->
+      <div class="tpl-card selected" data-tpl="elegance">
+        <div class="tpl-preview" style="background:#f7f2ed;">
+          <div class="tpl-mini-nav" style="background:rgba(247,242,237,.95);">
+            <div class="tpl-mini-dot" style="background:#b5963a;width:60px;"></div>
+            <div class="tpl-mini-dot" style="background:#b5963a;width:30px;margin-left:auto;border-radius:10px;"></div>
+          </div>
+          <div class="tpl-mini-hero" style="background:linear-gradient(135deg,#f0e8dc,#e8ddd0);">
+            <div class="tpl-mini-h1" style="background:#b5963a;"></div>
+            <div class="tpl-mini-p" style="background:#888;"></div>
+            <div class="tpl-mini-p" style="background:#888;width:70%;"></div>
+            <div class="tpl-mini-btn" style="background:#b5963a;"></div>
+          </div>
+          <div class="tpl-mini-cards">
+            <div class="tpl-mini-card" style="background:#e8ddd0;"></div>
+            <div class="tpl-mini-card" style="background:#e8ddd0;"></div>
+            <div class="tpl-mini-card" style="background:#e8ddd0;"></div>
+          </div>
+        </div>
+        <div class="tpl-info">
+          <div class="tpl-name">Elegance</div>
+          <div class="tpl-desc">Тёплый бежевый · Золото</div>
+        </div>
+      </div>
+
+      <!-- NOIR -->
+      <div class="tpl-card" data-tpl="noir">
+        <div class="tpl-preview" style="background:#111;">
+          <div class="tpl-mini-nav" style="background:rgba(17,17,17,.97);">
+            <div class="tpl-mini-dot" style="background:#c9a84c;width:60px;"></div>
+            <div class="tpl-mini-dot" style="background:#c9a84c;width:30px;margin-left:auto;border-radius:2px;"></div>
+          </div>
+          <div class="tpl-mini-hero" style="background:linear-gradient(135deg,#1a1a1a,#222);">
+            <div class="tpl-mini-h1" style="background:#c9a84c;"></div>
+            <div class="tpl-mini-p" style="background:#555;"></div>
+            <div class="tpl-mini-p" style="background:#555;width:70%;"></div>
+            <div class="tpl-mini-btn" style="background:#c9a84c;border-radius:2px;"></div>
+          </div>
+          <div class="tpl-mini-cards">
+            <div class="tpl-mini-card" style="background:#1e1e1e;border-left:2px solid #c9a84c;border-radius:2px;"></div>
+            <div class="tpl-mini-card" style="background:#1e1e1e;border-left:2px solid #c9a84c;border-radius:2px;"></div>
+            <div class="tpl-mini-card" style="background:#1e1e1e;border-left:2px solid #c9a84c;border-radius:2px;"></div>
+          </div>
+        </div>
+        <div class="tpl-info">
+          <div class="tpl-name">Noir</div>
+          <div class="tpl-desc">Люкс тёмный · Золото</div>
+        </div>
+      </div>
+
+      <!-- ROSE -->
+      <div class="tpl-card" data-tpl="rose">
+        <div class="tpl-preview" style="background:#fdf0f2;">
+          <div class="tpl-mini-nav" style="background:rgba(253,240,242,.96);">
+            <div class="tpl-mini-dot" style="background:#c4748a;width:60px;border-radius:10px;"></div>
+            <div class="tpl-mini-dot" style="background:#c4748a;width:30px;margin-left:auto;border-radius:10px;"></div>
+          </div>
+          <div class="tpl-mini-hero" style="background:linear-gradient(135deg,#fde8ec,#fad5db);">
+            <div class="tpl-mini-h1" style="background:#c4748a;border-radius:6px;"></div>
+            <div class="tpl-mini-p" style="background:#e0a0b0;border-radius:6px;"></div>
+            <div class="tpl-mini-p" style="background:#e0a0b0;width:70%;border-radius:6px;"></div>
+            <div class="tpl-mini-btn" style="background:#c4748a;border-radius:16px;"></div>
+          </div>
+          <div class="tpl-mini-cards">
+            <div class="tpl-mini-card" style="background:#fde8ec;border-radius:10px;"></div>
+            <div class="tpl-mini-card" style="background:#fde8ec;border-radius:10px;"></div>
+            <div class="tpl-mini-card" style="background:#fde8ec;border-radius:10px;"></div>
+          </div>
+        </div>
+        <div class="tpl-info">
+          <div class="tpl-name">Rose</div>
+          <div class="tpl-desc">Нежный розовый · Женственный</div>
+        </div>
+      </div>
+
+      <!-- MINIMAL -->
+      <div class="tpl-card" data-tpl="minimal">
+        <div class="tpl-preview" style="background:#f8f8f8;">
+          <div class="tpl-mini-nav" style="background:rgba(248,248,248,.97);border-bottom:1px solid #ddd;">
+            <div class="tpl-mini-dot" style="background:#1a1a1a;width:60px;border-radius:0;"></div>
+            <div class="tpl-mini-dot" style="background:#1a1a1a;width:30px;margin-left:auto;border-radius:2px;"></div>
+          </div>
+          <div class="tpl-mini-hero" style="background:#f0f0f0;">
+            <div class="tpl-mini-h1" style="background:#1a1a1a;border-radius:2px;"></div>
+            <div class="tpl-mini-p" style="background:#aaa;border-radius:2px;"></div>
+            <div class="tpl-mini-p" style="background:#aaa;width:70%;border-radius:2px;"></div>
+            <div class="tpl-mini-btn" style="background:#1a1a1a;border-radius:2px;"></div>
+          </div>
+          <div class="tpl-mini-cards">
+            <div class="tpl-mini-card" style="background:#e8e8e8;border-radius:2px;border-top:2px solid #1a1a1a;"></div>
+            <div class="tpl-mini-card" style="background:#e8e8e8;border-radius:2px;border-top:2px solid #1a1a1a;"></div>
+            <div class="tpl-mini-card" style="background:#e8e8e8;border-radius:2px;border-top:2px solid #1a1a1a;"></div>
+          </div>
+        </div>
+        <div class="tpl-info">
+          <div class="tpl-name">Minimal</div>
+          <div class="tpl-desc">Чистый белый · Лаконичный</div>
+        </div>
+      </div>
+
+      <!-- BOTANICA -->
+      <div class="tpl-card" data-tpl="botanica">
+        <div class="tpl-preview" style="background:#1b2a1e;">
+          <div class="tpl-mini-nav" style="background:rgba(27,42,30,.97);">
+            <div class="tpl-mini-dot" style="background:#8fb56e;width:60px;"></div>
+            <div class="tpl-mini-dot" style="background:#8fb56e;width:30px;margin-left:auto;border-radius:8px;"></div>
+          </div>
+          <div class="tpl-mini-hero" style="background:linear-gradient(135deg,#1e3022,#253528);">
+            <div class="tpl-mini-h1" style="background:#8fb56e;"></div>
+            <div class="tpl-mini-p" style="background:#5a7a60;"></div>
+            <div class="tpl-mini-p" style="background:#5a7a60;width:70%;"></div>
+            <div class="tpl-mini-btn" style="background:#8fb56e;border-radius:8px;"></div>
+          </div>
+          <div class="tpl-mini-cards">
+            <div class="tpl-mini-card" style="background:#223325;border-left:2px solid #8fb56e;"></div>
+            <div class="tpl-mini-card" style="background:#223325;border-left:2px solid #8fb56e;"></div>
+            <div class="tpl-mini-card" style="background:#223325;border-left:2px solid #8fb56e;"></div>
+          </div>
+        </div>
+        <div class="tpl-info">
+          <div class="tpl-name">Botanica</div>
+          <div class="tpl-desc">Тёмный лес · Природный</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHOTOS -->
+  <div class="tab-panel" id="tab-photos">
+    <div class="tab-title">Управление фото</div>
+    <div class="tab-sub">Нажмите на ячейку для загрузки фото. Фото автоматически сжимаются для быстрой загрузки.</div>
+
+    <div class="photo-section">
+      <div class="photo-section-title">📸 Фото мастера</div>
+      <div class="photo-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+        <div class="photo-slot" data-key="janna" onclick="triggerUpload(this)">
+          <div class="add-icon">+</div>
+          <div class="add-text">Фото Жанны</div>
+          <input type="file" accept="image/*">
+          <div class="photo-slot-label">Фото мастера</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="photo-section">
+      <div class="photo-section-title">🖼 Галерея «До и после» (6 фото)</div>
+      <div class="photo-grid">
+        <div class="photo-slot" data-key="gallery-1" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Работа 1</div><input type="file" accept="image/*"><div class="photo-slot-label">Работа 1</div></div>
+        <div class="photo-slot" data-key="gallery-2" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Работа 2</div><input type="file" accept="image/*"><div class="photo-slot-label">Работа 2</div></div>
+        <div class="photo-slot" data-key="gallery-3" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Работа 3</div><input type="file" accept="image/*"><div class="photo-slot-label">Работа 3</div></div>
+        <div class="photo-slot" data-key="gallery-4" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Работа 4</div><input type="file" accept="image/*"><div class="photo-slot-label">Работа 4</div></div>
+        <div class="photo-slot" data-key="gallery-5" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Работа 5</div><input type="file" accept="image/*"><div class="photo-slot-label">Работа 5</div></div>
+        <div class="photo-slot" data-key="gallery-6" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Работа 6</div><input type="file" accept="image/*"><div class="photo-slot-label">Работа 6</div></div>
+      </div>
+    </div>
+
+    <div class="photo-section">
+      <div class="photo-section-title">⚡ В процессе работы (6 фото)</div>
+      <div class="photo-grid">
+        <div class="photo-slot" data-key="work-1" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Процесс 1</div><input type="file" accept="image/*"><div class="photo-slot-label">Процесс 1</div></div>
+        <div class="photo-slot" data-key="work-2" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Процесс 2</div><input type="file" accept="image/*"><div class="photo-slot-label">Процесс 2</div></div>
+        <div class="photo-slot" data-key="work-3" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Процесс 3</div><input type="file" accept="image/*"><div class="photo-slot-label">Процесс 3</div></div>
+        <div class="photo-slot" data-key="work-4" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Процесс 4</div><input type="file" accept="image/*"><div class="photo-slot-label">Процесс 4</div></div>
+        <div class="photo-slot" data-key="work-5" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Процесс 5</div><input type="file" accept="image/*"><div class="photo-slot-label">Процесс 5</div></div>
+        <div class="photo-slot" data-key="work-6" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Процесс 6</div><input type="file" accept="image/*"><div class="photo-slot-label">Процесс 6</div></div>
+      </div>
+    </div>
+
+    <div class="photo-section">
+      <div class="photo-section-title">🏆 Сертификаты (8 фото)</div>
+      <div class="photo-grid">
+        <div class="photo-slot" data-key="cert-1" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Серт. 1</div><input type="file" accept="image/*"><div class="photo-slot-label">Сертификат 1</div></div>
+        <div class="photo-slot" data-key="cert-2" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Серт. 2</div><input type="file" accept="image/*"><div class="photo-slot-label">Сертификат 2</div></div>
+        <div class="photo-slot" data-key="cert-3" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Серт. 3</div><input type="file" accept="image/*"><div class="photo-slot-label">Сертификат 3</div></div>
+        <div class="photo-slot" data-key="cert-4" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Серт. 4</div><input type="file" accept="image/*"><div class="photo-slot-label">Сертификат 4</div></div>
+        <div class="photo-slot" data-key="cert-5" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Серт. 5</div><input type="file" accept="image/*"><div class="photo-slot-label">Сертификат 5</div></div>
+        <div class="photo-slot" data-key="cert-6" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Серт. 6</div><input type="file" accept="image/*"><div class="photo-slot-label">Сертификат 6</div></div>
+        <div class="photo-slot" data-key="cert-7" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Серт. 7</div><input type="file" accept="image/*"><div class="photo-slot-label">Сертификат 7</div></div>
+        <div class="photo-slot" data-key="cert-8" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Серт. 8</div><input type="file" accept="image/*"><div class="photo-slot-label">Сертификат 8</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="tab-panel" id="tab-content">
+    <div class="tab-title">Текст и услуги</div>
+    <div class="tab-sub">Редактируйте тексты сайта. Все ключевые слова для SEO сохраняются автоматически.</div>
+
+    <div class="section-divider">🏠 Главный экран (Hero)</div>
+    <div class="field-group">
+      <label class="field-label">Тег над заголовком</label>
+      <input class="field-input" id="f-hero-tag" value="Студия «Точка красоты» · Саратов">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Заголовок H1 (важно для SEO)</label>
+      <input class="field-input" id="f-hero-h1" value="Перманентный макияж в Саратове">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Подзаголовок</label>
+      <textarea class="field-textarea" id="f-hero-sub">Брови, губы, веки — профессиональный перманентный макияж с долгосрочным результатом. Мастер Жанна Спиридонова.</textarea>
+    </div>
+
+    <div class="section-divider">👤 О мастере</div>
+    <div class="field-group">
+      <label class="field-label">Имя мастера</label>
+      <input class="field-input" id="f-about-name" value="Жанна">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Должность / статус</label>
+      <input class="field-input" id="f-about-sub" value="Опытный мастер перманентного макияжа · Саратов">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Описание (основной текст)</label>
+      <textarea class="field-textarea" id="f-about-desc" style="min-height:140px;">Влюблена в своё дело и хочу помочь как можно большему количеству женщин чувствовать себя привлекательными вне зависимости от внешних обстоятельств. В студии вы можете получить услуги перманентного макияжа бровей, губ и межресничного пространства, удалить старый татуаж или татуировку, сделать массаж лица и мини-тату.</textarea>
+    </div>
+
+    <div class="section-divider">💰 Прайс-лист</div>
+    <div class="services-grid-admin">
+      <div class="service-card-admin">
+        <div class="field-group"><label class="field-label">Услуга 1 — название</label><input class="field-input" id="f-s1-name" value="Перманентный макияж"></div>
+        <div class="field-group"><label class="field-label">Цена (₽)</label><input class="field-input" id="f-s1-price" value="7 000"></div>
+        <div class="field-group"><label class="field-label">Описание</label><textarea class="field-textarea" id="f-s1-desc" style="min-height:60px;">Губы, брови, веки и межресничное пространство</textarea></div>
+      </div>
+      <div class="service-card-admin">
+        <div class="field-group"><label class="field-label">Услуга 2 — название</label><input class="field-input" id="f-s2-name" value="Перекрытие некачественного ПМ"></div>
+        <div class="field-group"><label class="field-label">Цена (₽)</label><input class="field-input" id="f-s2-price" value="8 000"></div>
+        <div class="field-group"><label class="field-label">Описание</label><textarea class="field-textarea" id="f-s2-desc" style="min-height:60px;">Исправление ошибок некачественного перманентного макияжа</textarea></div>
+      </div>
+      <div class="service-card-admin">
+        <div class="field-group"><label class="field-label">Услуга 3 — название</label><input class="field-input" id="f-s3-name" value="Перманент на возрастной коже"></div>
+        <div class="field-group"><label class="field-label">Цена (₽)</label><input class="field-input" id="f-s3-price" value="8 000"></div>
+        <div class="field-group"><label class="field-label">Описание</label><textarea class="field-textarea" id="f-s3-desc" style="min-height:60px;">Специальная техника нанесения для возрастной кожи</textarea></div>
+      </div>
+      <div class="service-card-admin">
+        <div class="field-group"><label class="field-label">Услуга 4 — название</label><input class="field-input" id="f-s4-name" value="Мини-тату"></div>
+        <div class="field-group"><label class="field-label">Цена (₽)</label><input class="field-input" id="f-s4-price" value="3 000"></div>
+        <div class="field-group"><label class="field-label">Описание</label><textarea class="field-textarea" id="f-s4-desc" style="min-height:60px;">Небольшие татуировки для вашей индивидуальности</textarea></div>
+      </div>
+      <div class="service-card-admin">
+        <div class="field-group"><label class="field-label">Услуга 5 — название</label><input class="field-input" id="f-s5-name" value="Удаление некачественного ПМ"></div>
+        <div class="field-group"><label class="field-label">Цена (₽)</label><input class="field-input" id="f-s5-price" value="3 000"></div>
+        <div class="field-group"><label class="field-label">Описание</label><textarea class="field-textarea" id="f-s5-desc" style="min-height:60px;">Удаление с помощью ремувера</textarea></div>
+      </div>
+      <div class="service-card-admin">
+        <div class="field-group"><label class="field-label">Услуга 6 — название</label><input class="field-input" id="f-s6-name" value="Бровистика"></div>
+        <div class="field-group"><label class="field-label">Цена (₽)</label><input class="field-input" id="f-s6-price" value="1 400"></div>
+        <div class="field-group"><label class="field-label">Описание</label><textarea class="field-textarea" id="f-s6-desc" style="min-height:60px;">Окрашивание, коррекция, укладка и осветление бровей</textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTS -->
+  <div class="tab-panel" id="tab-contacts">
+    <div class="tab-title">Контакты</div>
+    <div class="tab-sub">Контакты используются везде на сайте и в SEO-разметке.</div>
+
+    <div class="field-group"><label class="field-label">Название салона</label><input class="field-input" id="f-salon" value="Студия «Точка красоты»"></div>
+    <div class="field-group"><label class="field-label">Телефон (без пробелов)</label><input class="field-input" id="f-phone" value="89678011501" placeholder="89991234567"></div>
+    <div class="field-group"><label class="field-label">Телефон для отображения</label><input class="field-input" id="f-phone-display" value="8 (967) 801-15-01"></div>
+    <div class="field-group"><label class="field-label">Адрес</label><input class="field-input" id="f-address" value="ул. Орджоникидзе 1г, стр. 3, Саратов"></div>
+    <div class="field-group"><label class="field-label">Город (для SEO)</label><input class="field-input" id="f-city" value="Саратов"></div>
+    <div class="field-group"><label class="field-label">Режим работы</label><input class="field-input" id="f-hours" value="Запись по предварительному согласованию"></div>
+    <div class="field-group"><label class="field-label">Ссылка ВКонтакте</label><input class="field-input" id="f-vk" value="https://vk.com/pmjanna"></div>
+    <div class="field-group"><label class="field-label">Ссылка DIKIDI (онлайн-запись)</label><input class="field-input" id="f-dikidi" value="https://dikidi.ru/1789286"></div>
+    <div class="field-group"><label class="field-label">Ссылка на сайт (домен)</label><input class="field-input" id="f-domain" value="https://permanent-saratov.ru/"></div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="tab-panel" id="tab-export">
+    <div class="tab-title">Экспорт сайта</div>
+    <div class="tab-sub">Скачайте готовый файл и загрузите на хостинг.</div>
+    <div class="export-box">
+      <div class="export-steps">
+        <div class="export-step">
+          <div class="export-num">1</div>
+          <div class="export-text">Настройте шаблон, фото и тексты в панели, затем нажмите <strong>«Сохранить»</strong></div>
+        </div>
+        <div class="export-step">
+          <div class="export-num">2</div>
+          <div class="export-text">Нажмите <strong>«Скачать сайт»</strong> — получите файл <strong>index.html</strong> со всеми настройками внутри</div>
+        </div>
+        <div class="export-step">
+          <div class="export-num">3</div>
+          <div class="export-text">Загрузите файл на <strong>GitHub</strong> в репозиторий. Папку <strong>img/</strong> тоже загрузите отдельно</div>
+        </div>
+        <div class="export-step">
+          <div class="export-num">4</div>
+          <div class="export-text">Сайт обновится на <strong>permanent-saratov.ru</strong> в течение 1–2 минут</div>
+        </div>
+      </div>
+      <button class="export-btn" id="exportBtn">📥 Скачать сайт (index.html)</button>
+      <div class="export-note">⚠️ Фото из папки img/ нужно загрузить отдельно на GitHub. Или используйте вкладку «Фото» — тогда они встроятся прямо в HTML файл.</div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast">✓ Сохранено</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────
+const STORE_KEY = 'janna_site';
+const PHOTO_KEY = 'janna_photos';
+
+const defaults = {
+  template: 'elegance',
+  'hero-tag': 'Студия «Точка красоты» · Саратов',
+  'hero-h1': 'Перманентный макияж\nв Саратове',
+  'hero-sub': 'Брови, губы, веки — профессиональный перманентный макияж с долгосрочным результатом. Мастер Жанна Спиридонова.',
+  'about-name': 'Жанна',
+  'about-sub': 'Опытный мастер перманентного макияжа · Саратов',
+  'about-desc': 'Влюблена в своё дело и хочу помочь как можно большему количеству женщин чувствовать себя привлекательными вне зависимости от внешних обстоятельств. В студии вы можете получить услуги перманентного макияжа бровей, губ и межресничного пространства, удалить старый татуаж или татуировку, сделать массаж лица и мини-тату.',
+  's1-name': 'Перманентный макияж', 's1-price': '7 000', 's1-desc': 'Губы, брови, веки и межресничное пространство',
+  's2-name': 'Перекрытие некачественного ПМ', 's2-price': '8 000', 's2-desc': 'Исправление ошибок некачественного перманентного макияжа',
+  's3-name': 'Перманент на возрастной коже', 's3-price': '8 000', 's3-desc': 'Специальная техника нанесения для возрастной кожи',
+  's4-name': 'Мини-тату', 's4-price': '3 000', 's4-desc': 'Небольшие татуировки для вашей индивидуальности',
+  's5-name': 'Удаление некачественного ПМ', 's5-price': '3 000', 's5-desc': 'Удаление с помощью ремувера',
+  's6-name': 'Бровистика', 's6-price': '1 400', 's6-desc': 'Окрашивание, коррекция, укладка и осветление бровей',
+  salon: 'Студия «Точка красоты»',
+  phone: '89678011501',
+  'phone-display': '8 (967) 801-15-01',
+  address: 'ул. Орджоникидзе 1г, стр. 3, Саратов',
+  city: 'Саратов',
+  hours: 'Запись по предварительному согласованию',
+  vk: 'https://vk.com/pmjanna',
+  dikidi: 'https://dikidi.ru/1789286',
+  domain: 'https://permanent-saratov.ru/'
+};
+
+let state = { ...defaults, ...JSON.parse(localStorage.getItem(STORE_KEY) || '{}') };
+let photos = JSON.parse(localStorage.getItem(PHOTO_KEY) || '{}');
+
+// ── TABS ──────────────────────────────────────────────
+document.querySelectorAll('.nav-btn[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ── TEMPLATES ─────────────────────────────────────────
+document.querySelectorAll('.tpl-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    state.template = card.dataset.tpl;
+  });
+});
+
+function syncTemplateUI() {
+  document.querySelectorAll('.tpl-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.tpl === state.template);
+  });
+}
+
+// ── FIELDS ─────────────────────────────────────────────
+function syncFieldsToState() {
+  document.querySelectorAll('[id^="f-"]').forEach(el => {
+    const key = el.id.slice(2);
+    state[key] = el.value;
+  });
+}
+
+function syncStateToFields() {
+  document.querySelectorAll('[id^="f-"]').forEach(el => {
+    const key = el.id.slice(2);
+    if (state[key] !== undefined) el.value = state[key];
+  });
+}
+
+// ── PHOTO UPLOAD ───────────────────────────────────────
+function triggerUpload(slot) {
+  slot.querySelector('input[type=file]').click();
+}
+
+document.querySelectorAll('.photo-slot input[type=file]').forEach(input => {
+  input.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const slot = input.closest('.photo-slot');
+    const key = slot.dataset.key;
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 800;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        const b64 = canvas.toDataURL('image/jpeg', 0.75);
+        photos[key] = b64;
+        showPhotoInSlot(slot, b64);
+        showToast('Фото загружено');
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+function showPhotoInSlot(slot, src) {
+  let img = slot.querySelector('img');
+  if (!img) {
+    img = document.createElement('img');
+    slot.insertBefore(img, slot.firstChild);
+  }
+  img.src = src;
+  slot.classList.add('has-img');
+}
+
+function loadPhotosToSlots() {
+  document.querySelectorAll('.photo-slot[data-key]').forEach(slot => {
+    const key = slot.dataset.key;
+    if (photos[key]) showPhotoInSlot(slot, photos[key]);
+  });
+}
+
+// ── SAVE ───────────────────────────────────────────────
+document.getElementById('saveBtn').addEventListener('click', () => {
+  syncFieldsToState();
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  try { localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); } catch(e) {
+    alert('Фото не сохранились — слишком много данных. Попробуйте загрузить меньше фото или используйте экспорт.');
+  }
+  showToast('✓ Сохранено! Откройте сайт чтобы увидеть изменения.');
+});
+
+// ── TOAST ──────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── THEMES CSS ─────────────────────────────────────────
+const themes = {
+  elegance: { bg:'#f7f2ed', bg2:'#ffffff', gold:'#b5963a', goldLight:'#d4b96a', text:'#2c2c2c', textLight:'#666666', radius:'12px', navBg:'rgba(247,242,237,0.96)', contactBg:'#2c2c2c', contactText:'#f0e8dc', font:"'Georgia', serif" },
+  noir:     { bg:'#111111', bg2:'#1c1c1c', gold:'#c9a84c', goldLight:'#e4c97a', text:'#e8e0d5', textLight:'#9a8878', radius:'4px',  navBg:'rgba(17,17,17,0.97)',   contactBg:'#000000', contactText:'#e8e0d5', font:"'Georgia', serif" },
+  rose:     { bg:'#fdf0f2', bg2:'#ffffff', gold:'#c4748a', goldLight:'#e0a0b0', text:'#2a1520', textLight:'#8a6070', radius:'20px', navBg:'rgba(253,240,242,0.96)', contactBg:'#2a1520', contactText:'#fdf0f2', font:'Arial, sans-serif' },
+  minimal:  { bg:'#f8f8f8', bg2:'#ffffff', gold:'#1a1a1a', goldLight:'#444444', text:'#111111', textLight:'#777777', radius:'2px',  navBg:'rgba(248,248,248,0.97)', contactBg:'#111111', contactText:'#f8f8f8', font:'Arial, sans-serif' },
+  botanica: { bg:'#1b2a1e', bg2:'#223325', gold:'#8fb56e', goldLight:'#b0d090', text:'#e0edd8', textLight:'#90a880', radius:'8px',  navBg:'rgba(27,42,30,0.97)',   contactBg:'#111a12', contactText:'#e0edd8', font:"'Georgia', serif" }
+};
+
+function getThemeCSS(t) {
+  const th = themes[t] || themes.elegance;
+  return `
+    :root {
+      --bg: ${th.bg}; --bg2: ${th.bg2}; --gold: ${th.gold}; --gold-light: ${th.goldLight};
+      --text: ${th.text}; --text-light: ${th.textLight}; --radius: ${th.radius};
+      --nav-bg: ${th.navBg}; --contact-bg: ${th.contactBg}; --contact-text: ${th.contactText};
+      --font: ${th.font};
+    }`;
+}
+
+// ── EXPORT ─────────────────────────────────────────────
+document.getElementById('exportBtn').addEventListener('click', () => {
+  syncFieldsToState();
+
+  // Fetch index.html and inject settings
+  fetch('index.html')
+    .then(r => r.text())
+    .then(html => {
+      // 1. Inject theme CSS
+      const themeCSS = `<style id="theme-override">${getThemeCSS(state.template)}</style>`;
+      html = html.replace('</head>', themeCSS + '\n</head>');
+
+      // 2. Inject photo data as base64 overrides
+      let photoScript = '<script id="photo-data">\n(function(){\n';
+      Object.entries(photos).forEach(([key, b64]) => {
+        photoScript += `document.querySelectorAll('[data-img="${key}"]').forEach(function(el){el.src="${b64}";});\n`;
+      });
+      photoScript += '})();\n<\/script>';
+
+      // 3. Inject text overrides
+      const s = state;
+      const textScript = `<script id="text-data">
+(function(){
+  var set = function(id,v){ var el=document.getElementById(id); if(el&&v) el.innerHTML=v; };
+  set('hero-tag', ${JSON.stringify(s['hero-tag'])});
+  set('hero-h1', ${JSON.stringify((s['hero-h1']||'').replace(/\n/g,'<br>'))});
+  set('hero-sub', ${JSON.stringify(s['hero-sub'])});
+  set('about-name', ${JSON.stringify(s['about-name'])});
+  set('about-sub', ${JSON.stringify(s['about-sub'])});
+  set('about-desc', ${JSON.stringify(s['about-desc'])});
+  set('s1-name',${JSON.stringify(s['s1-name'])}); set('s1-price',${JSON.stringify(s['s1-price'])}); set('s1-desc',${JSON.stringify(s['s1-desc'])});
+  set('s2-name',${JSON.stringify(s['s2-name'])}); set('s2-price',${JSON.stringify(s['s2-price'])}); set('s2-desc',${JSON.stringify(s['s2-desc'])});
+  set('s3-name',${JSON.stringify(s['s3-name'])}); set('s3-price',${JSON.stringify(s['s3-price'])}); set('s3-desc',${JSON.stringify(s['s3-desc'])});
+  set('s4-name',${JSON.stringify(s['s4-name'])}); set('s4-price',${JSON.stringify(s['s4-price'])}); set('s4-desc',${JSON.stringify(s['s4-desc'])});
+  set('s5-name',${JSON.stringify(s['s5-name'])}); set('s5-price',${JSON.stringify(s['s5-price'])}); set('s5-desc',${JSON.stringify(s['s5-desc'])});
+  set('s6-name',${JSON.stringify(s['s6-name'])}); set('s6-price',${JSON.stringify(s['s6-price'])}); set('s6-desc',${JSON.stringify(s['s6-desc'])});
+  set('contact-salon', ${JSON.stringify(s.salon)});
+  set('contact-address', ${JSON.stringify(s.address)});
+  set('contact-hours', ${JSON.stringify(s.hours)});
+  document.querySelectorAll('.phone-link').forEach(function(el){
+    el.href='tel:+7'+${JSON.stringify(s.phone)}.replace(/\\D/g,'').slice(-10);
+    if(el.tagName!=='A'||el.dataset.raw) el.textContent=${JSON.stringify(s['phone-display'])};
+  });
+  document.querySelectorAll('.phone-display').forEach(function(el){ el.textContent=${JSON.stringify(s['phone-display'])}; });
+  document.querySelectorAll('.dikidi-link').forEach(function(el){ el.href=${JSON.stringify(s.dikidi)}; });
+})();
+<\/script>`;
+
+      html = html.replace('</body>', photoScript + '\n' + textScript + '\n</body>');
+
+      // Download
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'index.html';
+      a.click();
+      showToast('✓ Файл скачан!');
+    });
+});
+
+// ── INIT ───────────────────────────────────────────────
+syncStateToFields();
+syncTemplateUI();
+loadPhotosToSlots();
+</script>
+</body>
+</html>
