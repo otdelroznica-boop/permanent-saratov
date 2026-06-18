@@ -391,19 +391,61 @@
 
     /* ── MOBILE ── */
     @media (max-width: 768px) {
+      /* Nav */
       .nav-links, .nav-cta { display: none; }
       .burger { display: flex; }
       .nav-links.open {
         display: flex; flex-direction: column;
         position: absolute; top: 60px; left: 0; right: 0;
         background: var(--bg); padding: 20px 5%; gap: 16px;
-        border-bottom: 1px solid #e0d8cc;
+        border-bottom: 1px solid #e0d8cc; z-index: 99;
       }
       .nav-links.open + .nav-cta { display: block; margin: 0 5% 16px; }
-      .about-grid { grid-template-columns: 1fr; }
-      .about-photo { aspect-ratio: 1/1; }
-      .contacts-grid { grid-template-columns: 1fr; }
-      section { padding: 60px 5%; }
+
+      /* Sections */
+      section { padding: 50px 4%; }
+
+      /* Hero */
+      #hero { padding: 100px 4% 50px; min-height: auto; }
+      .hero-badges { gap: 20px; }
+      .badge-num { font-size: 1.5rem; }
+      .hero-btns { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 300px; text-align: center; }
+
+      /* About */
+      .about-grid { grid-template-columns: 1fr; gap: 30px; }
+      .about-photo { aspect-ratio: 4/3; max-width: 340px; margin: 0 auto; width: 100%; }
+
+      /* Services — 1 колонка */
+      .services-grid { grid-template-columns: 1fr; }
+
+      /* Gallery — 2 колонки на мобиле */
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+      /* Reviews — 1 колонка */
+      .reviews-grid { grid-template-columns: 1fr; }
+
+      /* Certs — 2 колонки */
+      .certs-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+      /* Contacts */
+      .contacts-grid { grid-template-columns: 1fr; gap: 30px; }
+      .contact-btn { display: block; text-align: center; margin-right: 0 !important; margin-bottom: 10px; }
+
+      /* Map */
+      .map-container iframe { height: 220px; }
+
+      /* Sticky button — крупнее на мобиле */
+      .sticky-phone { width: 64px; height: 64px; font-size: 1.8rem; bottom: 16px; right: 16px; }
+    }
+
+    /* ── VERY SMALL (iPhone SE и т.п.) ── */
+    @media (max-width: 380px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .certs-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-badges { flex-direction: column; align-items: center; gap: 10px; }
+      .badge { display: flex; gap: 8px; align-items: center; }
+      .badge-num { font-size: 1.3rem; }
     }
   </style>
 </head>
