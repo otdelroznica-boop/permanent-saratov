@@ -94,6 +94,14 @@
     .photo-slot input[type=file] { display: none; }
     .photo-slot.has-img .add-icon, .photo-slot.has-img .add-text { display: none; }
     .photo-slot-wide { aspect-ratio: 16/7; }
+    .delete-btn {
+      position: absolute; top: 6px; right: 6px; z-index: 10;
+      background: rgba(200,40,40,.85); border: none; border-radius: 50%;
+      width: 24px; height: 24px; color: #fff; font-size: 0.75rem; cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+    .photo-slot.has-img .delete-btn { display: flex; }
 
     /* CONTENT EDITOR */
     .field-group { margin-bottom: 22px; }
@@ -693,6 +701,42 @@ function showPhotoInSlot(slot, src) {
   }
   img.src = src;
   slot.classList.add('has-img');
+  // Add delete button if not already there
+  if (!slot.querySelector('.delete-btn')) {
+    const btn = document.createElement('button');
+    btn.className = 'delete-btn';
+    btn.title = 'Удалить фото';
+    btn.textContent = '✕';
+    btn.addEventListener('click', e => { e.stopPropagation(); deletePhoto(slot); });
+    slot.appendChild(btn);
+  }
+}
+
+function deletePhoto(slot) {
+  const key = slot.dataset.key;
+  delete photos[key];
+  saveLikesOrPhotos();
+  // Remove image
+  const img = slot.querySelector('img');
+  if (img) img.remove();
+  slot.classList.remove('has-img', 'is-default');
+  const btn = slot.querySelector('.delete-btn');
+  if (btn) btn.remove();
+  // Restore default if exists
+  if (slot.dataset.default) {
+    showPhotoInSlot(slot, slot.dataset.default);
+    slot.classList.add('is-default');
+    slot.classList.remove('has-img');
+    const delBtn = slot.querySelector('.delete-btn');
+    if (delBtn) delBtn.remove();
+  }
+  showToast('Фото удалено');
+}
+
+function saveLikesOrPhotos() {
+  try { localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); } catch(e) {
+    alert('Не удалось сохранить — слишком много фото. Используйте экспорт.');
+  }
 }
 
 function loadPhotosToSlots() {
