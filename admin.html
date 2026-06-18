@@ -129,9 +129,53 @@
       opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 9999;
     }
     .toast.show { opacity: 1; }
+    /* PASSWORD GATE */
+    .password-gate {
+      position: fixed; inset: 0; background: #0f0f0f;
+      display: flex; align-items: center; justify-content: center; z-index: 9000;
+    }
+    .password-box {
+      background: #1a1a1a; border-radius: 16px; padding: 40px;
+      width: 320px; text-align: center; border: 1px solid #2a2a2a;
+    }
+    .password-box h2 { color: #c9a84c; margin-bottom: 6px; font-size: 1.3rem; }
+    .password-box p { color: #666; font-size: 0.85rem; margin-bottom: 24px; }
+    .password-input {
+      width: 100%; background: #252525; border: 1px solid #333; border-radius: 8px;
+      padding: 12px 16px; color: #e0e0e0; font-size: 1rem; text-align: center;
+      outline: none; margin-bottom: 12px; letter-spacing: .1em;
+    }
+    .password-input:focus { border-color: #c9a84c; }
+    .password-btn {
+      width: 100%; padding: 12px; background: #c9a84c; border: none; border-radius: 8px;
+      color: #1a1a1a; font-weight: bold; font-size: 1rem; cursor: pointer;
+    }
+    .password-error { color: #e05555; font-size: 0.82rem; margin-top: 8px; display: none; }
+    /* PUBLISH BUTTON */
+    .publish-btn {
+      width: 100%; padding: 11px; background: #2a5a2a; border: none; border-radius: 8px;
+      color: #7dd87d; font-weight: bold; font-size: 0.9rem; cursor: pointer;
+      transition: .15s; margin-top: 8px;
+    }
+    .publish-btn:hover { background: #336633; }
+    .publish-btn.loading { opacity: .6; cursor: wait; }
+    /* SETTINGS TAB */
+    .settings-field { margin-bottom: 16px; }
+    .settings-note { background: #1e1e1e; border-radius: 10px; padding: 16px; font-size: 0.83rem; color: #888; line-height: 1.6; margin-bottom: 20px; border-left: 3px solid #c9a84c; }
   </style>
 </head>
 <body>
+
+<!-- PASSWORD GATE -->
+<div class="password-gate" id="passwordGate">
+  <div class="password-box">
+    <h2>✦ Панель управления</h2>
+    <p>Введите пароль для входа</p>
+    <input class="password-input" type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password">
+    <button class="password-btn" id="passwordBtn">Войти</button>
+    <div class="password-error" id="passwordError">Неверный пароль</div>
+  </div>
+</div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
@@ -143,10 +187,12 @@
   <button class="nav-btn" data-tab="photos"><span class="icon">🖼</span> Фото</button>
   <button class="nav-btn" data-tab="content"><span class="icon">✏️</span> Текст и услуги</button>
   <button class="nav-btn" data-tab="contacts"><span class="icon">📞</span> Контакты</button>
-  <button class="nav-btn" data-tab="export"><span class="icon">📤</span> Экспорт сайта</button>
+  <button class="nav-btn" data-tab="export"><span class="icon">📤</span> Экспорт</button>
+  <button class="nav-btn" data-tab="settings"><span class="icon">⚙️</span> Настройки</button>
   <div class="sidebar-bottom">
     <button class="save-btn" id="saveBtn">💾 Сохранить</button>
-    <a href="index.html" target="_blank" class="open-site">↗ Открыть сайт</a>
+    <button class="publish-btn" id="publishBtn">🚀 Опубликовать на сайте</button>
+    <a href="https://permanent-saratov.ru" target="_blank" class="open-site">↗ Открыть сайт</a>
   </div>
 </aside>
 
@@ -455,6 +501,29 @@
     </div>
   </div>
 
+  <!-- SETTINGS -->
+  <div class="tab-panel" id="tab-settings">
+    <div class="tab-title">Настройки</div>
+    <div class="tab-sub">Одноразовая настройка для публикации сайта напрямую.</div>
+    <div class="settings-note">
+      🔑 Токен GitHub нужен один раз — он сохраняется в браузере и позволяет кнопке «Опубликовать» обновлять сайт автоматически без загрузки файлов.
+    </div>
+    <div class="settings-field">
+      <label class="field-label">GitHub токен</label>
+      <input class="field-input" id="gh-token" type="password" placeholder="gho_...">
+    </div>
+    <div class="settings-field">
+      <label class="field-label">Владелец репозитория</label>
+      <input class="field-input" id="gh-owner" value="otdelroznica-boop">
+    </div>
+    <div class="settings-field">
+      <label class="field-label">Репозиторий</label>
+      <input class="field-input" id="gh-repo" value="permanent-saratov">
+    </div>
+    <button class="save-btn" id="saveSettingsBtn" style="max-width:220px;margin-top:8px;">Сохранить настройки</button>
+    <div style="margin-top:16px;font-size:.8rem;color:#555;">После сохранения кнопка «🚀 Опубликовать» будет обновлять сайт за 1–2 минуты.</div>
+  </div>
+
 </main>
 
 <div class="toast" id="toast">✓ Сохранено</div>
@@ -684,6 +753,146 @@ document.getElementById('exportBtn').addEventListener('click', () => {
 syncStateToFields();
 syncTemplateUI();
 loadPhotosToSlots();
+loadGhSettings();
+
+// ── PASSWORD GATE ──────────────────────────────────────
+const PASS_HASH = '7c4a8d09ca3762af61e59520943dc26494f8941b'; // janna2025
+async function sha1(str) {
+  const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function checkPassword() {
+  const sessionOk = sessionStorage.getItem('admin_ok');
+  if (sessionOk === '1') { document.getElementById('passwordGate').style.display = 'none'; return; }
+}
+checkPassword();
+
+document.getElementById('passwordBtn').addEventListener('click', async () => {
+  const val = document.getElementById('passwordInput').value;
+  const hash = await sha1(val);
+  if (hash === PASS_HASH) {
+    sessionStorage.setItem('admin_ok', '1');
+    document.getElementById('passwordGate').style.display = 'none';
+  } else {
+    document.getElementById('passwordError').style.display = 'block';
+    document.getElementById('passwordInput').value = '';
+  }
+});
+document.getElementById('passwordInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('passwordBtn').click();
+});
+
+// ── GITHUB SETTINGS ────────────────────────────────────
+function loadGhSettings() {
+  const t = localStorage.getItem('gh_token');
+  const o = localStorage.getItem('gh_owner') || 'otdelroznica-boop';
+  const r = localStorage.getItem('gh_repo') || 'permanent-saratov';
+  if (t) document.getElementById('gh-token').value = t;
+  document.getElementById('gh-owner').value = o;
+  document.getElementById('gh-repo').value = r;
+}
+document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+  localStorage.setItem('gh_token', document.getElementById('gh-token').value.trim());
+  localStorage.setItem('gh_owner', document.getElementById('gh-owner').value.trim());
+  localStorage.setItem('gh_repo', document.getElementById('gh-repo').value.trim());
+  showToast('✓ Настройки сохранены');
+});
+
+// ── PUBLISH TO GITHUB ──────────────────────────────────
+document.getElementById('publishBtn').addEventListener('click', async () => {
+  const token = localStorage.getItem('gh_token');
+  const owner = localStorage.getItem('gh_owner') || 'otdelroznica-boop';
+  const repo  = localStorage.getItem('gh_repo')  || 'permanent-saratov';
+
+  if (!token) {
+    showToast('⚙️ Сначала укажите токен в Настройках');
+    document.querySelector('[data-tab="settings"]').click();
+    return;
+  }
+
+  syncFieldsToState();
+  const btn = document.getElementById('publishBtn');
+  btn.textContent = '⏳ Публикую...';
+  btn.classList.add('loading');
+
+  try {
+    // 1. Получаем текущий SHA файла
+    const metaResp = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/index.html`,
+      { headers: { Authorization: `token ${token}` } }
+    );
+    if (!metaResp.ok) throw new Error('Нет доступа к репозиторию');
+    const meta = await metaResp.json();
+    const sha = meta.sha;
+
+    // 2. Скачиваем текущий index.html
+    const rawResp = await fetch(meta.download_url + '?t=' + Date.now());
+    let html = await rawResp.text();
+
+    // 3. Применяем тему
+    const themeCSS = `<style id="theme-override">${getThemeCSS(state.template)}</style>`;
+    html = html.replace(/<style id="theme-override">[\s\S]*?<\/style>/g, '');
+    html = html.replace('</head>', themeCSS + '\n</head>');
+
+    // 4. Применяем тексты через DOM
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const s = state;
+    const set = (id, v) => { const el = doc.getElementById(id); if (el && v) el.innerHTML = v; };
+
+    set('hero-tag', s['hero-tag']);
+    set('hero-h1', (s['hero-h1']||'').replace(/\n/g,'<br>'));
+    set('hero-sub', s['hero-sub']);
+    set('about-name', s['about-name']);
+    set('about-sub', s['about-sub']);
+    set('about-desc', s['about-desc']);
+    for (let i = 1; i <= 6; i++) {
+      set(`s${i}-name`, s[`s${i}-name`]);
+      set(`s${i}-price`, s[`s${i}-price`] ? s[`s${i}-price`] + ' <span>₽</span>' : null);
+      set(`s${i}-desc`, s[`s${i}-desc`]);
+    }
+    set('contact-salon', s.salon);
+    set('contact-address', s.address);
+    set('contact-hours', s.hours);
+    doc.querySelectorAll('.phone-link').forEach(el => { if(s.phone) el.href = 'tel:+7' + s.phone.replace(/\D/g,'').slice(-10); });
+    doc.querySelectorAll('.dikidi-link').forEach(el => { if(s.dikidi) el.href = s.dikidi; });
+
+    // 5. Применяем фото (base64 из localStorage)
+    doc.querySelectorAll('[data-img]').forEach(img => {
+      const k = img.getAttribute('data-img');
+      if (photos[k]) img.setAttribute('src', photos[k]);
+    });
+
+    // 6. Сериализуем и кодируем
+    const newHtml = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+    const encoded = btoa(unescape(encodeURIComponent(newHtml)));
+
+    // 7. Пушим в GitHub
+    const pushResp = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/index.html`,
+      {
+        method: 'PUT',
+        headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: 'Обновление сайта через панель управления',
+          content: encoded,
+          sha
+        })
+      }
+    );
+    if (!pushResp.ok) {
+      const err = await pushResp.json();
+      throw new Error(err.message || 'Ошибка публикации');
+    }
+
+    showToast('🚀 Сайт обновлён! Изменения появятся через 1–2 минуты.');
+  } catch(e) {
+    showToast('❌ Ошибка: ' + e.message);
+  } finally {
+    btn.textContent = '🚀 Опубликовать на сайте';
+    btn.classList.remove('loading');
+  }
+});
 </script>
 </body>
 </html>
