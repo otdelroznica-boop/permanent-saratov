@@ -756,21 +756,16 @@ loadPhotosToSlots();
 loadGhSettings();
 
 // ── PASSWORD GATE ──────────────────────────────────────
-const PASS_HASH = '7c4a8d09ca3762af61e59520943dc26494f8941b'; // janna2025
-async function sha1(str) {
-  const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
+const PASS = 'janna2025';
 function checkPassword() {
   const sessionOk = sessionStorage.getItem('admin_ok');
   if (sessionOk === '1') { document.getElementById('passwordGate').style.display = 'none'; return; }
 }
 checkPassword();
 
-document.getElementById('passwordBtn').addEventListener('click', async () => {
+document.getElementById('passwordBtn').addEventListener('click', () => {
   const val = document.getElementById('passwordInput').value;
-  const hash = await sha1(val);
-  if (hash === PASS_HASH) {
+  if (val === PASS) {
     sessionStorage.setItem('admin_ok', '1');
     document.getElementById('passwordGate').style.display = 'none';
   } else {
