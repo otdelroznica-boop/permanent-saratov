@@ -414,6 +414,19 @@
     </div>
 
     <div class="photo-section">
+      <div class="photo-section-title">✨ Мои работы</div>
+      <div class="photo-grid" id="myworks-grid">
+        <div class="photo-slot" data-key="mywork-1" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Моя работа 1</div><input type="file" accept="image/*"><div class="photo-slot-label">Моя работа 1</div></div>
+        <div class="photo-slot" data-key="mywork-2" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Моя работа 2</div><input type="file" accept="image/*"><div class="photo-slot-label">Моя работа 2</div></div>
+        <div class="photo-slot" data-key="mywork-3" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Моя работа 3</div><input type="file" accept="image/*"><div class="photo-slot-label">Моя работа 3</div></div>
+        <div class="photo-slot" data-key="mywork-4" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Моя работа 4</div><input type="file" accept="image/*"><div class="photo-slot-label">Моя работа 4</div></div>
+        <div class="photo-slot" data-key="mywork-5" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Моя работа 5</div><input type="file" accept="image/*"><div class="photo-slot-label">Моя работа 5</div></div>
+        <div class="photo-slot" data-key="mywork-6" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Моя работа 6</div><input type="file" accept="image/*"><div class="photo-slot-label">Моя работа 6</div></div>
+      </div>
+      <button class="add-slot-btn" onclick="addPhotoSlot('myworks-grid','mywork')">+ Добавить работу</button>
+    </div>
+
+    <div class="photo-section">
       <div class="photo-section-title">⚡ В процессе работы</div>
       <div class="photo-grid" id="work-grid">
         <div class="photo-slot" data-key="work-1" data-default="img/work-1.jpg" onclick="triggerUpload(this)"><div class="add-icon">+</div><div class="add-text">Процесс 1</div><input type="file" accept="image/*"><div class="photo-slot-label">Процесс 1</div></div>
