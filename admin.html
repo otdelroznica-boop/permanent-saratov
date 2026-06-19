@@ -962,12 +962,39 @@ document.getElementById('exportBtn').addEventListener('click', () => {
     });
 });
 
+// ── SYNC PHOTOS FROM PUBLISHED SITE ───────────────────
+async function syncPhotosFromSite() {
+  try {
+    const url = 'https://permanent-saratov.ru/index.html?_=' + Date.now();
+    const resp = await fetch(url, { cache: 'no-store' });
+    if (!resp.ok) return;
+    const html = await resp.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    let merged = false;
+    doc.querySelectorAll('[data-img]').forEach(img => {
+      const k = img.getAttribute('data-img');
+      const src = img.getAttribute('src') || '';
+      // Only take site photo if localStorage doesn't already have a newer version
+      if (src && src.length > 10 && !photos[k]) {
+        photos[k] = src;
+        merged = true;
+      }
+    });
+    if (merged) {
+      try { localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); } catch(e) {}
+      loadPhotosToSlots();
+      showToast('✓ Фото синхронизированы с опубликованного сайта');
+    }
+  } catch(e) { /* offline or CORS — ignore */ }
+}
+
 // ── INIT ───────────────────────────────────────────────
 syncStateToFields();
 syncTemplateUI();
 loadPhotosToSlots();
 loadGhSettings();
 buildStructureMap();
+syncPhotosFromSite(); // pull embedded photos from published HTML → fills other browsers
 
 // ── PASSWORD GATE ──────────────────────────────────────
 const PASS = 'janna2025';
