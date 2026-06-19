@@ -701,42 +701,47 @@ function showPhotoInSlot(slot, src) {
   }
   img.src = src;
   slot.classList.add('has-img');
-  // Add delete button if not already there
   if (!slot.querySelector('.delete-btn')) {
     const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'delete-btn';
     btn.title = 'Удалить фото';
     btn.textContent = '✕';
-    btn.addEventListener('click', e => { e.stopPropagation(); deletePhoto(slot); });
+    btn.dataset.action = 'delete';
     slot.appendChild(btn);
   }
 }
 
+// Single delegated handler for all delete buttons
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.delete-btn');
+  if (!btn) return;
+  e.stopPropagation();
+  e.preventDefault();
+  const slot = btn.closest('.photo-slot');
+  if (!slot) return;
+  deletePhoto(slot);
+}, true); // capture phase — fires before onclick attributes
+
 function deletePhoto(slot) {
   const key = slot.dataset.key;
   delete photos[key];
-  saveLikesOrPhotos();
-  // Remove image
+  try { localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); } catch(e) {}
+  // Remove uploaded img
   const img = slot.querySelector('img');
   if (img) img.remove();
-  slot.classList.remove('has-img', 'is-default');
+  // Remove delete button
   const btn = slot.querySelector('.delete-btn');
   if (btn) btn.remove();
-  // Restore default if exists
+  slot.classList.remove('has-img', 'is-default');
+  // Restore default preview if slot has one
   if (slot.dataset.default) {
-    showPhotoInSlot(slot, slot.dataset.default);
+    const defImg = document.createElement('img');
+    defImg.src = slot.dataset.default;
+    slot.insertBefore(defImg, slot.firstChild);
     slot.classList.add('is-default');
-    slot.classList.remove('has-img');
-    const delBtn = slot.querySelector('.delete-btn');
-    if (delBtn) delBtn.remove();
   }
-  showToast('Фото удалено');
-}
-
-function saveLikesOrPhotos() {
-  try { localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); } catch(e) {
-    alert('Не удалось сохранить — слишком много фото. Используйте экспорт.');
-  }
+  showToast('Фото удалено — нажмите «Опубликовать» чтобы применить');
 }
 
 function loadPhotosToSlots() {
