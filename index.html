@@ -390,6 +390,9 @@
     }
     .carousel-item.has-photo .carousel-empty { display: none; }
     .carousel-item.has-photo img { display: block !important; }
+    .carousel-item img[src=""] { display: none !important; }
+    .carousel-item img[src]:not([src=""]) { display: block !important; }
+    .carousel-item img:not([src=""]) ~ .carousel-empty { display: none !important; }
 
     /* ── REVIEWS ── */
     #reviews { background: var(--bg); }
@@ -914,7 +917,8 @@
       if(p[k]){ img.src=p[k]; var ci=img.closest('.carousel-item'); if(ci) ci.classList.add('has-photo'); }
     });
     // Hide «Мои работы» section if no mywork photos uploaded yet
-    var hasMyWork = Object.keys(p).some(function(k){ return k.indexOf('mywork-')===0; });
+    var hasMyWork = Object.keys(p).some(function(k){ return k.indexOf('mywork-')===0; })
+      || !!document.querySelector('#my-works img[data-img][src]:not([src=""])');
     var myWorksSection = document.getElementById('my-works');
     var myWorksNav = document.querySelector('a[href="#my-works"]');
     if(!hasMyWork && myWorksSection){ myWorksSection.style.display='none'; }

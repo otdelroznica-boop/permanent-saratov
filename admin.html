@@ -1074,7 +1074,12 @@ document.getElementById('publishBtn').addEventListener('click', async () => {
     // 5. Применяем фото (base64 из localStorage)
     doc.querySelectorAll('[data-img]').forEach(img => {
       const k = img.getAttribute('data-img');
-      if (photos[k]) img.setAttribute('src', photos[k]);
+      if (photos[k]) {
+        img.setAttribute('src', photos[k]);
+        img.removeAttribute('style'); // убираем display:none
+        const ci = img.closest('.carousel-item');
+        if (ci) ci.classList.add('has-photo');
+      }
     });
 
     // 6. Сериализуем и кодируем
