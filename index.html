@@ -318,11 +318,17 @@
     .action-btn:hover { background: rgba(255,255,255,.35); }
     .action-btn.liked .heart { filter: none; }
     .comment-btn { margin-left: auto; }
-    .carousel-nav { display: flex; justify-content: center; gap: 6px; margin-top: 4px; }
+    .carousel-nav { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 8px; }
     .carousel-dot {
       width: 6px; height: 6px; border-radius: 50%; background: #ccc; transition: .3s; cursor: pointer;
     }
     .carousel-dot.active { background: var(--gold); width: 20px; border-radius: 3px; }
+    .carousel-arr {
+      width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--gold); background: transparent;
+      color: var(--gold); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s, color .2s; flex-shrink: 0;
+    }
+    .carousel-arr:hover { background: var(--gold); color: #fff; }
     /* LIGHTBOX */
     .lightbox-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 10000;
@@ -1140,17 +1146,41 @@
     }
 
     carousel.addEventListener('scroll', update, { passive: true });
-    // Use IntersectionObserver as backup for initial state
     setTimeout(() => { scrollToItem(0); setTimeout(update, 400); }, 150);
 
     // Drag on desktop
     let isDown = false, startX, sl;
-    carousel.addEventListener('mousedown', e => { isDown = true; startX = e.pageX; sl = carousel.scrollLeft; carousel.style.cursor = 'grabbing'; });
-    document.addEventListener('mouseup', () => { isDown = false; carousel.style.cursor = 'grab'; });
+    carousel.addEventListener('mousedown', e => { isDown = true; startX = e.pageX; sl = carousel.scrollLeft; carousel.style.cursor = 'grabbing'; pauseAuto(); });
+    document.addEventListener('mouseup', () => { isDown = false; carousel.style.cursor = 'grab'; resumeAuto(); });
     carousel.addEventListener('mousemove', e => {
       if (!isDown) return; e.preventDefault();
       carousel.scrollLeft = sl - (e.pageX - startX);
     });
+
+    // Pause on hover
+    carousel.addEventListener('mouseenter', pauseAuto);
+    carousel.addEventListener('mouseleave', resumeAuto);
+    // Pause on touch
+    carousel.addEventListener('touchstart', pauseAuto, { passive: true });
+    carousel.addEventListener('touchend', () => setTimeout(resumeAuto, 2000), { passive: true });
+
+    // Arrow buttons
+    const nav = dotsContainer;
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'carousel-arr'; prevBtn.innerHTML = '&#8592;'; prevBtn.setAttribute('aria-label', 'Назад');
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'carousel-arr'; nextBtn.innerHTML = '&#8594;'; nextBtn.setAttribute('aria-label', 'Вперёд');
+    prevBtn.addEventListener('click', () => { pauseAuto(); scrollToItem((getActiveIndex() - 1 + items.length) % items.length); setTimeout(resumeAuto, 3000); });
+    nextBtn.addEventListener('click', () => { pauseAuto(); scrollToItem((getActiveIndex() + 1) % items.length); setTimeout(resumeAuto, 3000); });
+    nav.insertBefore(prevBtn, nav.firstChild);
+    nav.appendChild(nextBtn);
+
+    // Auto-play
+    let autoTimer = null;
+    function autoNext() { scrollToItem((getActiveIndex() + 1) % items.length); }
+    function pauseAuto() { clearInterval(autoTimer); autoTimer = null; }
+    function resumeAuto() { if (!autoTimer) autoTimer = setInterval(autoNext, 3500); }
+    resumeAuto();
   }
 
   initCarousel('carousel-gallery', 'dots-gallery');
