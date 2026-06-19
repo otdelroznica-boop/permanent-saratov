@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://permanent-saratov.ru/sitemap.xml
