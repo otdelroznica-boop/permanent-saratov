@@ -725,7 +725,7 @@ document.addEventListener('click', e => {
 
 function deletePhoto(slot) {
   const key = slot.dataset.key;
-  delete photos[key];
+  photos[key] = ''; // пустая строка = явно удалено, не восстанавливать с сайта
   try { localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); } catch(e) {}
   // Remove uploaded img
   const img = slot.querySelector('img');
@@ -976,7 +976,7 @@ async function syncPhotosFromSite() {
       const k = img.getAttribute('data-img');
       const src = img.getAttribute('src') || '';
       // Only take site photo if localStorage doesn't already have a newer version
-      if (src && src.length > 10 && !photos[k]) {
+      if (src && src.length > 10 && !photos.hasOwnProperty(k)) {
         photos[k] = src;
         merged = true;
       }
@@ -1103,10 +1103,17 @@ document.getElementById('publishBtn').addEventListener('click', async () => {
     doc.querySelectorAll('[data-img]').forEach(img => {
       const k = img.getAttribute('data-img');
       if (photos[k]) {
+        // есть фото — вшиваем
         img.setAttribute('src', photos[k]);
-        img.removeAttribute('style'); // убираем display:none
+        img.removeAttribute('style');
         const ci = img.closest('.carousel-item');
         if (ci) ci.classList.add('has-photo');
+      } else if (photos.hasOwnProperty(k) && photos[k] === '') {
+        // явно удалено — очищаем src в HTML
+        img.setAttribute('src', '');
+        img.setAttribute('style', 'display:none');
+        const ci = img.closest('.carousel-item');
+        if (ci) ci.classList.remove('has-photo');
       }
     });
 
