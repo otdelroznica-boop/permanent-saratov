@@ -912,6 +912,12 @@
       var k=img.getAttribute('data-img');
       if(p[k]){ img.src=p[k]; var ci=img.closest('.carousel-item'); if(ci) ci.classList.add('has-photo'); }
     });
+    // Hide «Мои работы» section if no mywork photos uploaded yet
+    var hasMyWork = Object.keys(p).some(function(k){ return k.indexOf('mywork-')===0; });
+    var myWorksSection = document.getElementById('my-works');
+    var myWorksNav = document.querySelector('a[href="#my-works"]');
+    if(!hasMyWork && myWorksSection){ myWorksSection.style.display='none'; }
+    if(!hasMyWork && myWorksNav){ myWorksNav.style.display='none'; }
   } catch(e){}
 })();
 </script>
