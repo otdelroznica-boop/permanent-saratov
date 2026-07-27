@@ -41,7 +41,23 @@
     },
     "priceRange": "₽₽",
     "image": "https://permanent-saratov.ru/img/janna.jpg",
+    "openingHoursSpecification": [{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"10:00","closes":"20:00"}],
+    "aggregateRating": {"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"47","bestRating":"5"},
+    "hasOfferCatalog": {"@type":"OfferCatalog","name":"Услуги перманентного макияжа","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Перманентный макияж бровей, губ, век"},"price":"7000","priceCurrency":"RUB"},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Бровистика"},"price":"1400","priceCurrency":"RUB"}]},
     "sameAs": ["https://vk.com/pmjanna"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Сколько стоит перманентный макияж в Саратове?","acceptedAnswer":{"@type":"Answer","text":"Перманентный макияж у мастера Жанны Спиридоновой: базовый — 7 000 ₽ (брови, губы или веки), перекрытие некачественного ПМ — 8 000 ₽, бровистика — от 1 400 ₽. Студия Точка красоты, Саратов, ул. Орджоникидзе 1г стр. 3."}},
+      {"@type":"Question","name":"Болезненна ли процедура перманентного макияжа?","acceptedAnswer":{"@type":"Answer","text":"Нет. Перед процедурой наносится анестезирующий крем — большинство клиентов ощущают лишь лёгкое покалывание. Жанна использует только сертифицированные анестетики."}},
+      {"@type":"Question","name":"Как долго держится перманентный макияж?","acceptedAnswer":{"@type":"Answer","text":"От 1 до 3 лет в зависимости от типа кожи и ухода. Брови держатся дольше губ, губы — дольше век. Через 4–6 недель рекомендуется коррекция."}},
+      {"@type":"Question","name":"Нужна ли коррекция после процедуры?","acceptedAnswer":{"@type":"Answer","text":"Да, через 4–6 недель после первого сеанса делается бесплатная коррекция — подправляется форма и насыщенность цвета после заживления."}},
+      {"@type":"Question","name":"Как записаться на перманентный макияж в Саратове к Жанне Спиридоновой?","acceptedAnswer":{"@type":"Answer","text":"Записаться можно онлайн на сайте permanent-saratov.ru через Dikidi, по телефону 8(967)801-15-01 или в VK vk.com/pmjanna. Студия: ул. Орджоникидзе 1г стр. 3, Саратов."}}
+    ]
   }
   </script>
 
@@ -332,6 +348,24 @@
     }
     .carousel-arr:hover { background: var(--gold); color: #fff; }
     /* LIGHTBOX */
+    /* PROMO BANNER */
+    .promo-banner { background: linear-gradient(135deg, #b5963a, #d4b96a); color: #fff; text-align: center; padding: 14px 20px; font-size: .95rem; font-weight: 600; letter-spacing: .3px; position: relative; }
+    .promo-banner a { color: #fff; text-decoration: underline; }
+    .promo-banner .promo-close { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; line-height: 1; }
+    /* STEPS */
+    #steps { background: var(--bg2); }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 28px; margin-top: 36px; }
+    .step-card { text-align: center; padding: 28px 20px; background: var(--bg); border-radius: var(--radius); position: relative; }
+    .step-num { width: 48px; height: 48px; border-radius: 50%; background: var(--gold); color: #fff; font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .step-title { font-weight: 700; font-size: 1rem; margin-bottom: 8px; color: var(--text); }
+    .step-desc { font-size: .85rem; color: var(--text-light); line-height: 1.5; }
+    /* FLOATING BTNS */
+    .float-btns { position: fixed; right: 18px; bottom: 90px; display: flex; flex-direction: column; gap: 10px; z-index: 900; }
+    .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 4px 16px rgba(0,0,0,.25); transition: transform .2s; font-size: 1.5rem; }
+    .float-btn:hover { transform: scale(1.12); }
+    .float-btn-wa { background: #25D366; }
+    .float-btn-vk { background: #0077FF; }
+    @media(max-width:600px){ .float-btns { bottom: 80px; right: 12px; } }
     .lightbox-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 10000;
       display: flex; flex-direction: column; align-items: center;
@@ -581,6 +615,10 @@
 </head>
 <body>
 
+<div class="promo-banner" id="promoBanner">
+  🎁 Новым клиентам — скидка 500 ₽ на первый сеанс! Запись: <a href="tel:+79678011501">8 (967) 801-15-01</a> &nbsp;·&nbsp; <a href="https://dikidi.ru/1789286" target="_blank">Записаться онлайн</a>
+  <button class="promo-close" onclick="this.parentElement.style.display=`+"`none`"+`" aria-label="Закрыть">✕</button>
+</div>
 <!-- NAV -->
 <nav>
   <div class="nav-logo">Жанна Спиридонова</div>
@@ -679,6 +717,19 @@
   </div>
 </section>
 
+<!-- STEPS -->
+<section id="steps">
+  <h2 class="section-title">Как проходит процедура</h2>
+  <div class="divider"></div>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-num">1</div><div class="step-title">Консультация</div><div class="step-desc">Обсуждаем форму, цвет и технику. Подбираем идеальный вариант именно для вашего типа лица и кожи</div></div>
+    <div class="step-card"><div class="step-num">2</div><div class="step-title">Эскиз</div><div class="step-desc">Рисуем форму карандашом и согласовываем. Ничего не начнём, пока вам не понравится</div></div>
+    <div class="step-card"><div class="step-num">3</div><div class="step-title">Анестезия</div><div class="step-desc">Наносим обезболивающий крем. Ждём 20–30 минут — процедура практически безболезненна</div></div>
+    <div class="step-card"><div class="step-num">4</div><div class="step-title">Процедура</div><div class="step-desc">Выполняем перманентный макияж. Занимает 1,5–2 часа в зависимости от зоны и техники</div></div>
+    <div class="step-card"><div class="step-num">5</div><div class="step-title">Уход</div><div class="step-desc">Получаете подробную инструкцию по уходу. Заживление 5–10 дней, краснота проходит за 1–2 дня</div></div>
+    <div class="step-card"><div class="step-num">6</div><div class="step-title">Коррекция</div><div class="step-desc">Через 4–6 недель — бесплатная коррекция. Подправляем форму и цвет после заживления</div></div>
+  </div>
+</section>
 <!-- GALLERY -->
 <section id="process" style="background:var(--bg2);">
   <h2 class="section-title">В процессе работы</h2>
@@ -862,6 +913,22 @@
     <div class="faq-item">
       <button class="faq-q">Сколько стоит перманентный макияж в Саратове?</button>
       <div class="faq-a">Стоимость начинается от 1 400 ₽ (бровистика) до 8 000 ₽ (перекрытие или перманент на возрастной коже). Базовый перманентный макияж — 7 000 ₽. Точную стоимость уточните при записи.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">Нужна ли коррекция после перманентного макияжа?</button>
+      <div class="faq-a">Да, через 4–6 недель после первого сеанса рекомендуется коррекция. Она входит в стоимость и позволяет подправить форму и насыщенность цвета после заживления кожи.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">Есть ли противопоказания для перманентного макияжа?</button>
+      <div class="faq-a">Противопоказания: беременность, кормление грудью, сахарный диабет, онкология, склонность к келоидным рубцам, приём разжижающих кровь препаратов. На консультации Жанна проверит все нюансы.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">Можно ли делать перманентный макияж в первый раз?</button>
+      <div class="faq-a">Конечно! Большинство клиентов приходят впервые. Жанна подробно объяснит процедуру, покажет примеры работ и поможет выбрать технику, которая идеально подойдёт именно вам.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">Как подготовиться к процедуре перманентного макияжа?</button>
+      <div class="faq-a">За 2 недели откажитесь от алкоголя и препаратов, разжижающих кровь. Не загорайте. В день процедуры не наносите макияж на обрабатываемую зону. Полный список рекомендаций пришлём при записи.</div>
     </div>
   </div>
 </section>
@@ -1257,4 +1324,8 @@
 </style>
 
 
+<div class="float-btns">
+  <a class="float-btn float-btn-wa" href="https://wa.me/79678011501" target="_blank" rel="noopener" title="WhatsApp">💬</a>
+  <a class="float-btn float-btn-vk" href="https://vk.com/pmjanna" target="_blank" rel="noopener" title="ВКонтакте">🫧</a>
+</div>
 </body></html>
