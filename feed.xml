@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<yml_catalog date="2026-06-19">
+<yml_catalog date="2026-08-05">
   <shop>
-    <name>Студия перманентного макияжа Точка красоты</name>
-    <company>Жанна Спиридонова</company>
+    <name>Жанна Спиридонова</name>
+    <company>Студия перманентного макияжа «Точка красоты»</company>
     <url>https://permanent-saratov.ru/</url>
     <currencies>
       <currency id="RUR" rate="1"/>
@@ -10,90 +10,102 @@
     <categories>
       <category id="1">Перманентный макияж</category>
     </categories>
+    <sets>
+      <set id="permanent">
+        <name>Перманентный макияж</name>
+        <url>https://permanent-saratov.ru/#services</url>
+      </set>
+    </sets>
     <offers>
-      <offer id="1" type="vendor.model">
+      <offer id="1">
+        <name>Жанна Спиридонова — перманентный макияж бровей</name>
         <url>https://permanent-saratov.ru/#services</url>
-        <name>Перманентный макияж бровей</name>
+        <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
-        <price>4500</price>
+        <price>7000</price>
         <currencyId>RUR</currencyId>
-        <description>Профессиональный перманентный макияж бровей в технике волосковой татуировки, пудровых бровей или акварельных бровей. Мастер Жанна Спиридонова, Саратов, ул. Орджоникидзе 1г стр. 3.</description>
-        <vendor>Жанна Спиридонова</vendor>
         <picture>https://permanent-saratov.ru/img/gallery-1.jpg</picture>
-        <param name="Город">Саратов</param>
-        <param name="Адрес">ул. Орджоникидзе 1г стр. 3</param>
-        <param name="Телефон">+78967801-15-01</param>
-        <param name="Опыт">5+ лет</param>
+        <description>Перманентный макияж бровей в Саратове: волосковая техника, пудровое напыление, растушёвка. Мастер Жанна Спиридонова, студия «Точка красоты», ул. Орджоникидзе 1г стр. 3.</description>
+        <param name="Рейтинг">5</param>
+        <param name="Число отзывов">47</param>
+        <param name="Годы опыта">5</param>
+        <param name="Регион">Саратов</param>
+        <param name="Конверсия">15</param>
       </offer>
-      <offer id="2" type="vendor.model">
+      <offer id="2">
+        <name>Жанна Спиридонова — перманентный макияж губ</name>
         <url>https://permanent-saratov.ru/#services</url>
-        <name>Перманентный макияж губ</name>
+        <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
-        <price>5000</price>
+        <price>7000</price>
         <currencyId>RUR</currencyId>
-        <description>Татуаж губ — акварельные губы, контур губ, полное заполнение. Естественный результат, коррекция формы. Мастер Жанна Спиридонова, Саратов.</description>
-        <vendor>Жанна Спиридонова</vendor>
         <picture>https://permanent-saratov.ru/img/gallery-2.jpg</picture>
-        <param name="Город">Саратов</param>
-        <param name="Адрес">ул. Орджоникидзе 1г стр. 3</param>
-        <param name="Телефон">+78967801-15-01</param>
-        <param name="Опыт">5+ лет</param>
+        <description>Татуаж губ в Саратове: акварельные губы, контур, полное заполнение. Естественный результат, коррекция формы. Мастер Жанна Спиридонова.</description>
+        <param name="Рейтинг">5</param>
+        <param name="Число отзывов">47</param>
+        <param name="Годы опыта">5</param>
+        <param name="Регион">Саратов</param>
+        <param name="Конверсия">15</param>
       </offer>
-      <offer id="3" type="vendor.model">
+      <offer id="3">
+        <name>Жанна Спиридонова — перманентный макияж век</name>
         <url>https://permanent-saratov.ru/#services</url>
-        <name>Перманентный макияж век (стрелки)</name>
+        <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
-        <price>3500</price>
+        <price>7000</price>
         <currencyId>RUR</currencyId>
-        <description>Татуаж век — межресничное пространство, тонкие стрелки, растушёванные стрелки. Взгляд выразительнее без макияжа. Мастер Жанна Спиридонова, Саратов.</description>
-        <vendor>Жанна Спиридонова</vendor>
         <picture>https://permanent-saratov.ru/img/gallery-3.jpg</picture>
-        <param name="Город">Саратов</param>
-        <param name="Адрес">ул. Орджоникидзе 1г стр. 3</param>
-        <param name="Телефон">+78967801-15-01</param>
-        <param name="Опыт">5+ лет</param>
+        <description>Татуаж век в Саратове: межресничное пространство, тонкие и растушёванные стрелки. Взгляд выразительнее без макияжа. Мастер Жанна Спиридонова.</description>
+        <param name="Рейтинг">5</param>
+        <param name="Число отзывов">47</param>
+        <param name="Годы опыта">5</param>
+        <param name="Регион">Саратов</param>
+        <param name="Конверсия">15</param>
       </offer>
-      <offer id="4" type="vendor.model">
+      <offer id="4">
+        <name>Жанна Спиридонова — перекрытие некачественного ПМ</name>
         <url>https://permanent-saratov.ru/#services</url>
-        <name>Коррекция перманентного макияжа</name>
+        <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
-        <price>2500</price>
+        <price>8000</price>
         <currencyId>RUR</currencyId>
-        <description>Коррекция перманентного макияжа бровей, губ, век. Обновление цвета и формы. Мастер Жанна Спиридонова, Саратов, ул. Орджоникидзе 1г стр. 3.</description>
-        <vendor>Жанна Спиридонова</vendor>
         <picture>https://permanent-saratov.ru/img/gallery-4.jpg</picture>
-        <param name="Город">Саратов</param>
-        <param name="Адрес">ул. Орджоникидзе 1г стр. 3</param>
-        <param name="Телефон">+78967801-15-01</param>
-        <param name="Опыт">5+ лет</param>
+        <description>Исправление и перекрытие некачественного перманентного макияжа в Саратове. Работа с застарелым пигментом. Мастер Жанна Спиридонова.</description>
+        <param name="Рейтинг">5</param>
+        <param name="Число отзывов">47</param>
+        <param name="Годы опыта">5</param>
+        <param name="Регион">Саратов</param>
+        <param name="Конверсия">15</param>
       </offer>
-      <offer id="5" type="vendor.model">
+      <offer id="5">
+        <name>Жанна Спиридонова — удаление перманентного макияжа</name>
         <url>https://permanent-saratov.ru/#services</url>
-        <name>Удаление перманентного макияжа</name>
+        <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
         <price>3000</price>
         <currencyId>RUR</currencyId>
-        <description>Удаление некачественного перманентного макияжа ремувером. Безопасно, без шрамов. Мастер Жанна Спиридонова, Саратов.</description>
-        <vendor>Жанна Спиридонова</vendor>
         <picture>https://permanent-saratov.ru/img/gallery-5.jpg</picture>
-        <param name="Город">Саратов</param>
-        <param name="Адрес">ул. Орджоникидзе 1г стр. 3</param>
-        <param name="Телефон">+78967801-15-01</param>
-        <param name="Опыт">5+ лет</param>
+        <description>Удаление некачественного перманентного макияжа ремувером в Саратове. Безопасно, без шрамов. Мастер Жанна Спиридонова.</description>
+        <param name="Рейтинг">5</param>
+        <param name="Число отзывов">47</param>
+        <param name="Годы опыта">5</param>
+        <param name="Регион">Саратов</param>
+        <param name="Конверсия">15</param>
       </offer>
-      <offer id="6" type="vendor.model">
+      <offer id="6">
+        <name>Жанна Спиридонова — бровистика, окрашивание бровей</name>
         <url>https://permanent-saratov.ru/#services</url>
-        <name>Бровистика — коррекция и окрашивание бровей</name>
+        <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
         <price>1400</price>
         <currencyId>RUR</currencyId>
-        <description>Коррекция формы, окрашивание, укладка и осветление бровей. Быстро и профессионально. Мастер Жанна Спиридонова, Саратов.</description>
-        <vendor>Жанна Спиридонова</vendor>
         <picture>https://permanent-saratov.ru/img/gallery-6.jpg</picture>
-        <param name="Город">Саратов</param>
-        <param name="Адрес">ул. Орджоникидзе 1г стр. 3</param>
-        <param name="Телефон">+78967801-15-01</param>
-        <param name="Опыт">5+ лет</param>
+        <description>Коррекция формы, окрашивание, укладка и осветление бровей в Саратове. Мастер Жанна Спиридонова, студия «Точка красоты».</description>
+        <param name="Рейтинг">5</param>
+        <param name="Число отзывов">47</param>
+        <param name="Годы опыта">5</param>
+        <param name="Регион">Саратов</param>
+        <param name="Конверсия">15</param>
       </offer>
     </offers>
   </shop>
