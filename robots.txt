@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin.html
+Disallow: /yandex_8c8e26141ffafbdc.html
 
 Sitemap: https://permanent-saratov.ru/sitemap.xml
