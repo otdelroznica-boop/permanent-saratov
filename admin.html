@@ -896,12 +896,15 @@ const themes = {
 
 function getThemeCSS(t) {
   const th = themes[t] || themes.elegance;
+  // Названия переменных должны совпадать с assets/site.css
   return `
     :root {
-      --bg: ${th.bg}; --bg2: ${th.bg2}; --gold: ${th.gold}; --gold-light: ${th.goldLight};
-      --text: ${th.text}; --text-light: ${th.textLight}; --radius: ${th.radius};
-      --nav-bg: ${th.navBg}; --contact-bg: ${th.contactBg}; --contact-text: ${th.contactText};
-      --font: ${th.font};
+      --ground: ${th.bg}; --surface: ${th.bg2}; --surface-2: ${th.bg2};
+      --ink: ${th.contactBg}; --text: ${th.text}; --text-dim: ${th.textLight};
+      --wine: ${th.gold}; --wine-deep: ${th.gold}; --taupe: ${th.goldLight};
+      --line: color-mix(in srgb, ${th.text} 24%, transparent);
+      --line-soft: color-mix(in srgb, ${th.text} 12%, transparent);
+      --font-display: ${th.font};
     }`;
 }
 
