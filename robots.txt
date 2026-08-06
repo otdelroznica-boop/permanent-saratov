@@ -2,7 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /yandex_8c8e26141ffafbdc.html
-Disallow: /pamyatka-otzyvy.html
 Disallow: /new/
 
 Sitemap: https://permanent-saratov.ru/sitemap.xml
