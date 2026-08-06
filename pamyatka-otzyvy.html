@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Как собирать отзывы — памятка для Жанны</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body>
+<style>
+  :root {
+    --ground: #E7EAEC; --surface: #FFFFFF; --surface-2: #F1F3F4;
+    --ink: #16110F; --text: #241C19; --dim: #6B5F59;
+    --line: #CDD2D5; --line-soft: #DFE3E5;
+    --wine: #7C2F3C; --wine-soft: #F3E7E9; --taupe: #9C8375;
+    --ok: #2F6B45; --ok-soft: #E4F0E8;
+    --stop: #A32A22; --stop-soft: #FAE7E5;
+
+    --serif: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #141110; --surface: #1D1918; --surface-2: #262120;
+      --ink: #F0ECEA; --text: #E9E4E1; --dim: #A2948C;
+      --line: #3A3230; --line-soft: #2E2826;
+      --wine: #C4566A; --wine-soft: #2E1D21; --taupe: #B49C8D;
+      --ok: #6FBF8B; --ok-soft: #17251C;
+      --stop: #E0796F; --stop-soft: #2B1917;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #141110; --surface: #1D1918; --surface-2: #262120;
+    --ink: #F0ECEA; --text: #E9E4E1; --dim: #A2948C;
+    --line: #3A3230; --line-soft: #2E2826;
+    --wine: #C4566A; --wine-soft: #2E1D21; --taupe: #B49C8D;
+    --ok: #6FBF8B; --ok-soft: #17251C;
+    --stop: #E0796F; --stop-soft: #2B1917;
+  }
+  :root[data-theme="light"] {
+    --ground: #E7EAEC; --surface: #FFFFFF; --surface-2: #F1F3F4;
+    --ink: #16110F; --text: #241C19; --dim: #6B5F59;
+    --line: #CDD2D5; --line-soft: #DFE3E5;
+    --wine: #7C2F3C; --wine-soft: #F3E7E9; --taupe: #9C8375;
+    --ok: #2F6B45; --ok-soft: #E4F0E8;
+    --stop: #A32A22; --stop-soft: #FAE7E5;
+  }
+
+  .doc { background: var(--ground); color: var(--text); font-family: var(--sans);
+    font-size: 1.0625rem; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  .doc *, .doc *::before, .doc *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .doc h1, .doc h2, .doc h3 { font-family: var(--serif); font-weight: 400; text-wrap: balance; }
+
+  .in { max-width: 700px; margin: 0 auto; padding: clamp(2rem, 6vw, 4rem) clamp(1.1rem, 5vw, 2rem) 4rem; }
+
+  .eyebrow { font-size: .75rem; text-transform: uppercase; letter-spacing: .16em;
+    color: var(--dim); font-weight: 600; }
+  .doc h1 { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.05; letter-spacing: -.02em; margin: .7rem 0 1rem; }
+  .intro { font-size: 1.2rem; color: var(--dim); line-height: 1.5; }
+
+  .rule { height: 1px; background: var(--line); margin: 2.75rem 0; border: 0; }
+
+  .doc h2 { font-size: 1.6rem; line-height: 1.15; letter-spacing: -.01em; margin: 2.75rem 0 1rem; }
+  .doc h3 { font-family: var(--sans); font-weight: 700; font-size: 1.0625rem; margin: 1.75rem 0 .5rem; }
+  .doc p { margin-bottom: 1rem; }
+  .doc ul { margin: 0 0 1.2rem 1.15rem; }
+  .doc li { margin-bottom: .5rem; }
+  .doc strong { font-weight: 700; }
+
+  /* Её слова → решение */
+  .pain { background: var(--surface); border: 1px solid var(--line-soft); padding: 1.4rem 1.5rem;
+    margin-bottom: 1rem; }
+  .pain-q { font-family: var(--serif); font-style: italic; font-size: 1.1rem;
+    color: var(--taupe); margin-bottom: .75rem; }
+  .pain p:last-child { margin-bottom: 0; }
+
+  /* Тайминг */
+  .when { border-left: 2px solid var(--line); padding-left: 1.4rem; margin: 1.5rem 0 2rem; }
+  .when-item { position: relative; padding-bottom: 1.6rem; }
+  .when-item:last-child { padding-bottom: 0; }
+  .when-item::before { content: ''; position: absolute; left: calc(-1.4rem - 5px); top: .45rem;
+    width: 9px; height: 9px; border-radius: 50%; background: var(--wine);
+    box-shadow: 0 0 0 4px var(--ground); }
+  .when-t { font-size: .75rem; text-transform: uppercase; letter-spacing: .12em;
+    color: var(--wine); font-weight: 700; margin-bottom: .3rem; }
+  .when-item p { margin-bottom: 0; font-size: .95rem; }
+  .when-item p + p { margin-top: .5rem; }
+
+  /* Готовые тексты */
+  .msg { background: var(--surface); border: 1px solid var(--line-soft); margin-bottom: 1rem; }
+  .msg-top { display: flex; align-items: center; gap: 1rem; padding: .8rem 1.1rem;
+    border-bottom: 1px solid var(--line-soft); }
+  .msg-lbl { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em;
+    font-weight: 700; color: var(--dim); }
+  .copy { margin-left: auto; font-family: var(--sans); font-size: .75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em; padding: .45rem .9rem; cursor: pointer;
+    background: var(--ink); color: var(--ground); border: none; transition: background .2s; }
+  .copy:hover { background: var(--wine); }
+  .copy:focus-visible { outline: 2px solid var(--wine); outline-offset: 2px; }
+  .msg-body { padding: 1.1rem; font-size: .95rem; white-space: pre-wrap; line-height: 1.6; }
+
+  /* Можно / нельзя */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0 0; }
+  @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+  .col { padding: 1.3rem 1.4rem; }
+  .col-ok { background: var(--ok-soft); }
+  .col-stop { background: var(--stop-soft); }
+  .col h3 { margin-top: 0; font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; }
+  .col-ok h3 { color: var(--ok); }
+  .col-stop h3 { color: var(--stop); }
+  .col ul { margin: .75rem 0 0 1.05rem; }
+  .col li { font-size: .92rem; }
+
+  /* Ссылка */
+  .linkbox { background: var(--wine-soft); padding: 1.3rem 1.4rem; margin: 1.5rem 0; }
+  .linkbox .eyebrow { color: var(--wine); }
+  .linkbox code { display: block; font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+    font-size: .8rem; word-break: break-all; margin: .6rem 0 1rem; color: var(--text); }
+  .linkbox .copy { margin-left: 0; }
+
+  .note { font-size: .92rem; color: var(--dim); font-style: italic;
+    font-family: var(--serif); border-top: 1px solid var(--line); padding-top: 1.25rem; margin-top: 2rem; }
+
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(150%);
+    background: var(--ink); color: var(--ground); padding: .8rem 1.5rem; font-size: .85rem;
+    font-weight: 600; transition: transform .3s; z-index: 100; }
+  .toast.on { transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+
+<div class="doc">
+<div class="in">
+
+  <div class="eyebrow">Памятка для Жанны</div>
+  <h1>Как набирать отзывы, не выпрашивая</h1>
+  <p class="intro">Сейчас на Яндекс.Картах 7 отзывов и рейтинг 4,3. Чтобы попадать выше в выдаче по запросу «перманентный макияж Саратов», нужно хотя бы 25–30. Это полгода спокойной работы по 2–3 отзыва в месяц — без всякой накрутки.</p>
+
+  <hr class="rule">
+
+  <h2>Три причины, по которым не пишут</h2>
+  <p>Ты назвала их сама. Разберём каждую — у всех трёх разное решение.</p>
+
+  <div class="pain">
+    <div class="pain-q">«У неё интернета нет»</div>
+    <p>Это не проблема отзывов, это не твой канал. У части клиенток кнопочный телефон или они просто не пользуются картами — и не надо их мучить. Их ценность в другом: они приводят подруг. Им говори не «оставьте отзыв», а <strong>«расскажите обо мне, если понравилось»</strong>.</p>
+    <p>А вот тем, у кого смартфон есть, но интернет кончился — <strong>дай пароль от вайфая</strong>. Это снимает половину случаев.</p>
+  </div>
+
+  <div class="pain">
+    <div class="pain-q">«Некогда»</div>
+    <p>«Некогда» почти всегда значит «долго и непонятно что писать». Отзыв в её голове — это сочинение на полстраницы.</p>
+    <p>Поэтому проси <strong>не отзыв, а оценку</strong>: «поставьте звёздочки». Это три касания, десять секунд, возразить нечего. Яндекс после оценки сам предложит добавить текст — и больше половины добавляют, раз уж открыли.</p>
+  </div>
+
+  <div class="pain">
+    <div class="pain-q">«Говорят напишем — и не пишут»</div>
+    <p>Потому что «напишу дома» = «забуду в машине». Между обещанием и действием проходит день, и эмоция гаснет.</p>
+    <p>Лечится одним: <strong>отзыв должен быть написан при тебе</strong>, пока она ещё в кресле. Ниже — конкретный момент, когда это делать без всякой неловкости.</p>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Лучший момент — коррекция</h2>
+  <p>Это главное во всей памятке. На коррекции сходятся сразу три вещи, которых нет на первой процедуре:</p>
+  <ul>
+    <li>Первая работа <strong>уже зажила</strong> — она месяц ходит с результатом, получает комплименты и точно знает, что довольна.</li>
+    <li>Она <strong>сидит 20–30 минут с анестезией</strong> и не делает ничего. Телефон в руках, время девать некуда.</li>
+    <li>Вы уже знакомы — просить легко, это не выглядит навязчиво.</li>
+  </ul>
+  <p>Один этот момент даёт больше отзывов, чем все напоминания вместе взятые. Просто заведи это в привычку: нанесла крем — попросила оценку.</p>
+
+  <h3>Полная раскладка по моментам</h3>
+  <div class="when">
+    <div class="when-item">
+      <div class="when-t">В кресле, сразу после работы</div>
+      <p>Пик эмоции, но результат ещё красный и незаживший — писать «идеально» ей неловко. Здесь <strong>не проси отзыв</strong>. Скажи: «Через месяц на коррекции покажу, как это будет выглядеть по-настоящему».</p>
+    </div>
+    <div class="when-item">
+      <div class="when-t">Через 5–7 дней</div>
+      <p>Корочки сошли, она впервые видит настоящий результат. Пиши сама — сообщение про уход, а просьбу в конце, вторым делом. Текст ниже.</p>
+    </div>
+    <div class="when-item">
+      <div class="when-t">На коррекции — основной момент</div>
+      <p>Нанесла анестетик, ждёте. «Пока ждём, поставьте мне звёздочки, если не сложно — вот ссылка». Телефон уже в руках.</p>
+    </div>
+    <div class="when-item">
+      <div class="when-t">Больше — не напоминать</div>
+      <p>Одна просьба и одно напоминание. Третий раз превращает благодарного клиента в раздражённого.</p>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Наклейка с QR в кабинете</h2>
+  <p>Распечатай QR-код со ссылкой на отзывы и повесь <strong>на зеркало</strong>, у которого клиентка рассматривает результат. Не на дверь и не на стойку — именно туда, где она в момент радости.</p>
+  <p>Подпись короткая: «Понравилось? Наведите камеру». QR делается бесплатно на любом генераторе — вставь туда эту ссылку:</p>
+
+  <div class="linkbox">
+    <div class="eyebrow">Прямая ссылка на отзывы</div>
+    <code id="lnk">https://yandex.ru/maps/org/tochka_krasoty/191695107966/reviews/</code>
+    <button class="copy" data-copy="#lnk">Скопировать</button>
+  </div>
+
+  <p>Она ведёт сразу на отзывы, а не на общую карточку — на один шаг меньше, и это заметно влияет на то, дойдёт ли человек до конца.</p>
+
+  <hr class="rule">
+
+  <h2>Что говорить и писать</h2>
+  <p>Не проси «оставить отзыв» — это слишком общо, человек зависает над пустым полем. Задай <strong>конкретный вопрос</strong>, тогда он знает, с чего начать.</p>
+
+  <h3>Вслух, на коррекции</h3>
+  <div class="msg">
+    <div class="msg-top"><span class="msg-lbl">Говорить</span><button class="copy" data-copy="#m1">Скопировать</button></div>
+    <div class="msg-body" id="m1">Пока анестетик действует — поставьте мне, пожалуйста, звёздочки на Яндексе, если всё нравится. Это минута. Вот ссылка, я скину.
+
+А если захотите написать пару слов — напишите просто, чего боялись перед процедурой и как оказалось на самом деле. Такое читают внимательнее всего.</div>
+  </div>
+
+  <h3>Сообщение через 5–7 дней</h3>
+  <div class="msg">
+    <div class="msg-top"><span class="msg-lbl">В переписку</span><button class="copy" data-copy="#m2">Скопировать</button></div>
+    <div class="msg-body" id="m2">Здравствуйте! Как заживает? Корочки должны были уже сойти — если что-то беспокоит, напишите, разберёмся.
+
+Если результат радует, буду очень благодарна за оценку на Яндексе — это правда сильно помогает:
+https://yandex.ru/maps/org/tochka_krasoty/191695107966/reviews/
+
+Достаточно звёздочек, писать текст не обязательно.</div>
+  </div>
+
+  <h3>Три вопроса-подсказки</h3>
+  <p>Если человек готов написать текст, но не знает что — дай ему один из этих вопросов. Ответы получатся разными, и это важно: одинаковые отзывы Яндекс считает накруткой и снимает.</p>
+  <ul>
+    <li>Чего боялись перед процедурой и как оказалось на самом деле?</li>
+    <li>Что изменилось в вашем утре после перманента?</li>
+    <li>Если делали раньше у другого мастера — в чём разница?</li>
+  </ul>
+
+  <hr class="rule">
+
+  <h2>Границы</h2>
+  <p>Просить отзывы можно и нужно — это разрешено. А вот это ломает всё, включая уже набранное:</p>
+
+  <div class="cols">
+    <div class="col col-ok">
+      <h3>Можно</h3>
+      <ul>
+        <li>Просить лично и в переписке</li>
+        <li>Давать ссылку и QR-код</li>
+        <li>Напомнить один раз</li>
+        <li>Подсказать, о чём написать</li>
+        <li>Отвечать на все отзывы</li>
+        <li>Дать свой вайфай</li>
+      </ul>
+    </div>
+    <div class="col col-stop">
+      <h3>Нельзя</h3>
+      <ul>
+        <li>Скидка или бонус за отзыв</li>
+        <li>Писать самой с чужих аккаунтов</li>
+        <li>Просить писать с твоего телефона</li>
+        <li>Давать готовый текст под копирку</li>
+        <li>Просить друзей «для количества»</li>
+        <li>Десять отзывов за неделю</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem;"><strong>Про скидку за отзыв отдельно.</strong> Это прямо запрещено правилами Яндекса. Ловится легко, наказание — снятие отзывов и понижение карточки в выдаче. Полгода работы насмарку. Не стоит того.</p>
+
+  <p><strong>Про «с моего телефона напишем».</strong> Соблазн большой, но несколько отзывов с одного устройства и одного IP — самый очевидный признак накрутки. Именно так карточки и режут.</p>
+
+  <p><strong>Про темп.</strong> Два-три отзыва в месяц выглядят естественно. Десять за неделю после года тишины — красный флаг для антифрода, даже если все настоящие.</p>
+
+  <hr class="rule">
+
+  <h2>Отвечай на все отзывы</h2>
+  <p>Ответы видны всем и работают не хуже самих отзывов. Новый клиент читает не только что пишут о тебе, но и как ты отвечаешь.</p>
+  <p>На хороший — коротко и по-человечески, без «Благодарим за обращение в нашу компанию». На плохой — без спора: спасибо, что сказали → что произошло на самом деле → что сделали. Спокойный ответ на негатив продаёт лучше десяти восторженных отзывов, потому что показывает, что ты не бросаешь.</p>
+
+  <hr class="rule">
+
+  <h2>Куда именно просить</h2>
+  <p>Не распыляйся: один клиент — один отзыв в одном месте. Иначе получится везде по чуть-чуть и нигде нормально.</p>
+  <ul>
+    <li><strong>Яндекс.Карты</strong> — сюда основной поток. От них зависит, покажут ли тебя в поиске и на карте.</li>
+    <li><strong>2ГИС</strong> — вторым по важности, туда отправляй примерно каждого четвёртого.</li>
+    <li><strong>Dikidi</strong> — сам предложит оценку после визита, отдельно просить не надо.</li>
+  </ul>
+
+  <div class="note">Отдельно и срочно: на Яндекс.Картах у тебя всё ещё старый адрес — Орджоникидзе 1Г. Пока он там висит, клиенты едут не туда, а карточка теряет позиции. Обновить нужно через Яндекс.Бизнес, это важнее всего остального в этой памятке.</div>
+
+</div>
+</div>
+
+<div class="toast" id="toast">Скопировано</div>
+
+<script>
+  document.querySelectorAll('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var el = document.querySelector(b.dataset.copy);
+      if (!el) return;
+      var text = el.innerText.trim();
+      var done = function () {
+        var t = document.getElementById('toast');
+        t.classList.add('on');
+        setTimeout(function () { t.classList.remove('on'); }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () {});
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        ta.remove();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
