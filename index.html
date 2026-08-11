@@ -82,25 +82,18 @@
 
 <!-- ГЕРОЙ -->
 <header class="hero" id="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="eyebrow" id="hero-tag">Студия «Точка красоты» · Саратов</div>
-      <h1 id="hero-h1">Брови, которые<br>не надо <em>рисовать</em></h1>
-      <p class="hero-lead" id="hero-sub">Перманентный макияж бровей, губ и век. Форму согласуем карандашом до первого прокола — не понравится эскиз, не начинаем.</p>
-      <div class="hero-cta">
-        <a class="btn btn-solid dikidi-link" href="https://dikidi.ru/1789286" target="_blank" rel="noopener">Записаться онлайн</a>
-        <a class="btn btn-line phone-link" href="tel:+79678011501">8 (967) 801-15-01</a>
-      </div>
-      <div class="facts">
-        <div><div class="fact-n">5+</div><div class="fact-l">лет практики</div></div>
-        <div><div class="fact-n">4,3</div><div class="fact-l">на Яндекс&nbsp;Картах</div></div>
-        <div><div class="fact-n">6</div><div class="fact-l">сертификатов</div></div>
-      </div>
+  <div class="wrap hero-solo">
+    <div class="eyebrow" id="hero-tag">Студия «Точка красоты» · Саратов</div>
+    <h1 id="hero-h1">Брови, которые<br>не надо <em>рисовать</em></h1>
+    <p class="hero-lead" id="hero-sub">Перманентный макияж бровей, губ и век. Форму согласуем карандашом до первого прокола — не понравится эскиз, не начинаем.</p>
+    <div class="hero-cta">
+      <a class="btn btn-solid dikidi-link" href="https://dikidi.ru/1789286" target="_blank" rel="noopener">Записаться онлайн</a>
+      <a class="btn btn-line phone-link" href="tel:+79678011501">8 (967) 801-15-01</a>
     </div>
-    <div class="ba" id="ba" role="group" aria-label="Сравнение до и после">
-      <div class="ba-layer ba-after"><span class="ba-tag">После</span></div>
-      <div class="ba-layer ba-before" id="baBefore"><span class="ba-tag">До</span></div>
-      <div class="ba-handle" id="baHandle"></div>
+    <div class="facts">
+      <div><div class="fact-n">5+</div><div class="fact-l">лет практики</div></div>
+      <div><div class="fact-n">4,3</div><div class="fact-l">на Яндекс&nbsp;Картах</div></div>
+      <div><div class="fact-n">6</div><div class="fact-l">сертификатов</div></div>
     </div>
   </div>
 </header>
@@ -471,27 +464,6 @@
 </script>
 
 <script>
-// ── Слайдер до/после ──
-(function () {
-  var ba = document.getElementById('ba'), before = document.getElementById('baBefore'),
-      handle = document.getElementById('baHandle'), dragging = false;
-  if (!ba) return;
-  function setPos(x) {
-    var r = ba.getBoundingClientRect();
-    var pct = Math.min(100, Math.max(0, ((x - r.left) / r.width) * 100));
-    before.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
-    handle.style.left = pct + '%';
-  }
-  function down(e) { dragging = true; setPos(e.touches ? e.touches[0].clientX : e.clientX); }
-  function move(e) { if (dragging) setPos(e.touches ? e.touches[0].clientX : e.clientX); }
-  ba.addEventListener('mousedown', down);
-  ba.addEventListener('touchstart', down, { passive: true });
-  window.addEventListener('mousemove', move);
-  window.addEventListener('touchmove', move, { passive: true });
-  window.addEventListener('mouseup', function () { dragging = false; });
-  window.addEventListener('touchend', function () { dragging = false; });
-})();
-
 // ── Вопросы ──
 document.querySelectorAll('.faq-q').forEach(function (q) {
   q.addEventListener('click', function () { q.parentElement.classList.toggle('open'); });
