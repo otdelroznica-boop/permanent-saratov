@@ -437,6 +437,12 @@
   try {
     var s = JSON.parse(localStorage.getItem('janna_site') || '{}');
     var p = JSON.parse(localStorage.getItem('janna_photos') || '{}');
+    // Самоисправление старой опечатки «макияжв» без пробела — если найдена, чистим
+    // сохранённое значение, чтобы страница показывала верстальный дефолт из файла
+    if (s['hero-h1'] && /макияжв/i.test(s['hero-h1'])) {
+      delete s['hero-h1'];
+      try { localStorage.setItem('janna_site', JSON.stringify(s)); } catch (e) {}
+    }
     var set = function (id, v) { var el = document.getElementById(id); if (el && v) el.innerHTML = v; };
     set('hero-tag', s['hero-tag']); set('hero-h1', s['hero-h1']); set('hero-sub', s['hero-sub']);
     set('about-name', s['about-name']); set('about-sub', s['about-sub']); set('about-desc', s['about-desc']);
