@@ -3,8 +3,11 @@
 /* Герой */
 .hero { padding: clamp(2.5rem, 6vw, 5.5rem) 0 clamp(2rem, 5vw, 4rem); }
 .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr;
-  gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
-@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+  gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+/* Текст слегка выше базовой линии слайдера — заголовок читается первым по Z-паттерну,
+   а не наравне с фото, у которого больше визуального веса за счёт тени и цвета */
+.hero-grid > div:first-child { padding-top: clamp(.5rem, 2.5vw, 1.75rem); }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } .hero-grid > div:first-child { padding-top: 0; } }
 .hero h1 { font-size: clamp(2.6rem, 7.5vw, 5.4rem); line-height: .97; letter-spacing: -.03em; margin: .6rem 0 1.5rem; }
 .hero h1 em { font-style: italic; color: var(--wine); }
 .hero-lead { font-size: var(--t-lg); color: var(--text-dim); max-width: 34ch; margin-bottom: 2.25rem; line-height: 1.45; }
@@ -180,16 +183,6 @@
 .lb-close { position: fixed; top: 1rem; right: 1rem; z-index: 1001; }
 .lb-comments { background: var(--surface-2); padding: 1.25rem; margin-top: 1rem; }
 .vk-ph { text-align: center; font-size: var(--t-sm); color: var(--text-dim); padding: 1.5rem; }
-
-/* Плавающие кнопки */
-.floats { position: fixed; right: 16px; bottom: 20px; display: flex; flex-direction: column;
-  gap: 10px; z-index: 90; }
-.float { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center;
-  text-decoration: none; box-shadow: 0 4px 16px rgba(0,0,0,.28); transition: transform .2s;
-  font-size: 1.3rem; }
-.float:hover { transform: scale(1.1); }
-.f-wa { background: #25D366; }
-.f-vk { background: #0077FF; }
 
 @media (prefers-reduced-motion: no-preference) {
   .rise { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
