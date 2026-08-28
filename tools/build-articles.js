@@ -69,7 +69,7 @@ const ARTICLES = [
   title: 'Кому нельзя делать перманентный макияж',
   desc: 'Полный список противопоказаний к перманентному макияжу: абсолютные и временные. Что обязательно сказать мастеру до процедуры.',
   lead: 'Часть ограничений временные — подождали и сделали. Часть абсолютные, и тут никакой мастер не должен браться за работу.',
-  img: 'gallery-4.jpg',
+  img: 'gallery-7.jpg',
   tldr: 'Беременность, кормление, диабет, онкология, келоидные рубцы, разжижающие кровь — стоп. Простуда, критические дни, свежий загар — просто перенести дату.',
   body: [
     { h2: 'Абсолютные противопоказания', p: [
@@ -303,7 +303,8 @@ const FOOT = `<div class="wrap"><div class="foot">
   <span><a href="tel:+79678011501">${PHONE}</a></span>
 </div></div>`;
 
-function head(title, desc, canonical, extraLd) {
+function head(title, desc, canonical, extraLd, image, ogType) {
+  const img = image || `${SITE}/img/janna.jpg`;
   return `<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -317,9 +318,14 @@ function head(title, desc, canonical, extraLd) {
 <link rel="stylesheet" href="/assets/site.css">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
-<meta property="og:type" content="article">
+<meta property="og:type" content="${ogType || 'article'}">
 <meta property="og:url" content="${canonical}">
+<meta property="og:image" content="${img}">
 <meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${img}">
 ${extraLd || ''}
 </head>
 <body>
@@ -367,7 +373,7 @@ ${JSON.stringify({
       </div>
     </a>`).join('');
 
-  return `${head(a.title + ' | Жанна Спиридонова, Саратов', a.desc, url, ld)}
+  return `${head(a.title + ' | Жанна Спиридонова, Саратов', a.desc, url, ld, `${SITE}/img/${a.img}`, 'article')}
 
 <div class="wrap">
   <div class="crumbs"><a href="/">Главная</a> · <a href="/stati/">Статьи</a></div>
@@ -422,7 +428,8 @@ function indexPage(all) {
     </a>`).join('');
 
   return `${head('Статьи о перманентном макияже | Жанна Спиридонова, Саратов',
-    'Статьи мастера перманентного макияжа: как выбрать технику, как заживает, противопоказания, уход. Жанна Спиридонова, Саратов.', url)}
+    'Статьи мастера перманентного макияжа: как выбрать технику, как заживает, противопоказания, уход. Жанна Спиридонова, Саратов.', url,
+    null, `${SITE}/img/gallery-1.jpg`, 'website')}
 
 <div class="wrap">
   <div class="crumbs"><a href="/">Главная</a></div>
