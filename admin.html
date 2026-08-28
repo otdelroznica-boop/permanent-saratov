@@ -1089,24 +1089,42 @@ document.getElementById('publishBtn').addEventListener('click', async () => {
     set('contact-hours', s.hours);
     doc.querySelectorAll('.phone-link').forEach(el => { if(s.phone) el.href = 'tel:+7' + s.phone.replace(/\D/g,'').slice(-10); });
     doc.querySelectorAll('.dikidi-link').forEach(el => { if(s.dikidi) el.href = s.dikidi; });
+    // VK App ID — вшиваем прямо в атрибут body, чтобы сайт не зависел от localStorage
+    // конкретного браузера посетителя (иначе комментарии ВК работали бы только там,
+    // где кто-то когда-то вводил этот ID через панель)
+    if (doc.body) doc.body.setAttribute('data-vk-app-id', s.vk_app_id || '');
 
-    // 5. Применяем фото (base64 из localStorage)
+    // 5. Применяем фото — вшиваем прямо в HTML при публикации.
+    // Раньше видимость и src каждый посетитель пересчитывал сам в браузере по своему
+    // localStorage — из-за этого один и тот же сайт выглядел по-разному на разных
+    // устройствах. Теперь всё решается один раз здесь, и на GitHub уходит уже готовый
+    // файл — все видят одно и то же, независимо от истории их браузера.
     doc.querySelectorAll('[data-img]').forEach(img => {
       const k = img.getAttribute('data-img');
       if (photos[k]) {
         // есть фото — вшиваем
         img.setAttribute('src', photos[k]);
         img.removeAttribute('style');
-        const ci = img.closest('.carousel-item');
+        const ci = img.closest('.car-item');
         if (ci) ci.classList.add('has-photo');
       } else if (photos.hasOwnProperty(k) && photos[k] === '') {
         // явно удалено — очищаем src в HTML
         img.setAttribute('src', '');
         img.setAttribute('style', 'display:none');
-        const ci = img.closest('.carousel-item');
+        const ci = img.closest('.car-item');
         if (ci) ci.classList.remove('has-photo');
       }
     });
+
+    // 5б. Видимость блока «Мои работы» — решаем один раз при публикации, а не в
+    // браузере каждого посетителя. Смотрим итоговое состояние фото после шага 5:
+    // есть хоть одно реальное mywork-фото — показываем блок, нет — прячем.
+    const myWorksSection = doc.getElementById('my-works');
+    if (myWorksSection) {
+      const hasMyWork = Array.from(doc.querySelectorAll('#my-works img[data-img]'))
+        .some(img => img.getAttribute('src'));
+      myWorksSection.style.display = hasMyWork ? '' : 'none';
+    }
 
     // 6. Сериализуем и кодируем
     const newHtml = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;

@@ -72,7 +72,7 @@
       --font-display: 'Georgia', serif;
     }</style>
 </head>
-<body>
+<body data-vk-app-id="">
 
 <nav class="nav">
   <div class="nav-in">
@@ -420,44 +420,6 @@
   </div>
 </div>
 
-<!-- Настройки из панели управления -->
-<script>
-(function () {
-  try {
-    var s = JSON.parse(localStorage.getItem('janna_site') || '{}');
-    var p = JSON.parse(localStorage.getItem('janna_photos') || '{}');
-    // Самоисправление старой опечатки «макияжв» без пробела — если найдена, чистим
-    // сохранённое значение, чтобы страница показывала верстальный дефолт из файла
-    if (s['hero-h1'] && /макияжв/i.test(s['hero-h1'])) {
-      delete s['hero-h1'];
-      try { localStorage.setItem('janna_site', JSON.stringify(s)); } catch (e) {}
-    }
-    var set = function (id, v) { var el = document.getElementById(id); if (el && v) el.innerHTML = v; };
-    set('hero-tag', s['hero-tag']); set('hero-h1', s['hero-h1']); set('hero-sub', s['hero-sub']);
-    set('about-name', s['about-name']); set('about-sub', s['about-sub']); set('about-desc', s['about-desc']);
-    for (var i = 1; i <= 6; i++) {
-      set('s' + i + '-name', s['s' + i + '-name']);
-      set('s' + i + '-desc', s['s' + i + '-desc']);
-      set('s' + i + '-price', s['s' + i + '-price'] && s['s' + i + '-price'] + ' <span>₽</span>');
-    }
-    set('contact-salon', s.salon); set('contact-address', s.address); set('contact-hours', s.hours);
-    document.querySelectorAll('.phone-link').forEach(function (el) {
-      if (s.phone) el.href = 'tel:+7' + s.phone.replace(/\D/g, '').slice(-10);
-    });
-    document.querySelectorAll('.dikidi-link').forEach(function (el) { if (s.dikidi) el.href = s.dikidi; });
-    document.querySelectorAll('[data-img]').forEach(function (img) {
-      var k = img.getAttribute('data-img');
-      if (p[k]) img.src = p[k];
-    });
-    var hasMyWork = Object.keys(p).some(function (k) { return k.indexOf('mywork-') === 0 && p[k]; })
-      || !!document.querySelector('#my-works img[data-img][src]:not([src=""])');
-    var sec = document.getElementById('my-works');
-    if (!hasMyWork && sec) sec.style.display = 'none';
-    window.__vkAppId = s.vk_app_id || '';
-  } catch (e) {}
-})();
-</script>
-
 <script>
 // ── Вопросы ──
 document.querySelectorAll('.faq-q').forEach(function (q) {
@@ -469,7 +431,7 @@ var lb = document.getElementById('lb'), lbImg = document.getElementById('lb-img'
     lbCount = document.getElementById('lb-count'), lbComments = document.getElementById('lb-comments'),
     lbItems = [], lbIdx = 0, lbKey = '', vkReady = false;
 
-var vkAppId = window.__vkAppId || '';
+var vkAppId = document.body.getAttribute('data-vk-app-id') || '';
 if (vkAppId) {
   var sc = document.createElement('script');
   sc.src = 'https://vk.com/js/api/openapi.js?169';
