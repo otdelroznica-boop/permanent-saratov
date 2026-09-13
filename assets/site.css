@@ -4,13 +4,20 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Палитра «Элеганс», выбранная в панели управления (Шаблоны).
+   Раньше жила только внутри index.html как отдельный override и
+   пересобиралась при каждой публикации — статьи её не видели и
+   попадали под системную тёмную тему браузера вместо неё. Теперь
+   это и есть базовая палитра всего сайта, одна на все страницы.
+   Меняешь тему в панели — обнови эти значения и здесь тоже. */
 :root {
-  --ground: #E7EAEC; --surface: #F6F7F8; --surface-2: #FFFFFF;
-  --ink: #16110F; --text: #241C19; --text-dim: #6B5F59;
-  --line: #CDD2D5; --line-soft: #DDE1E3;
-  --wine: #7C2F3C; --wine-deep: #5E222C; --taupe: #9C8375;
+  --ground: #f7f2ed; --surface: #ffffff; --surface-2: #ffffff;
+  --ink: #2c2c2c; --text: #2c2c2c; --text-dim: #666666;
+  --line: color-mix(in srgb, #2c2c2c 24%, transparent);
+  --line-soft: color-mix(in srgb, #2c2c2c 12%, transparent);
+  --wine: #b5963a; --wine-deep: #b5963a; --taupe: #d4b96a;
 
-  --font-display: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  --font-display: 'Georgia', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 
   --t-xs: .75rem; --t-sm: .875rem; --t-md: 1.0625rem;
@@ -22,14 +29,9 @@
   --maxw: 1180px;
   --readw: 68ch;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ground: #141110; --surface: #1C1817; --surface-2: #23201E;
-    --ink: #F0ECEA; --text: #E9E4E1; --text-dim: #A2948C;
-    --line: #3A3230; --line-soft: #2C2624;
-    --wine: #C4566A; --wine-deep: #A84759; --taupe: #B49C8D;
-  }
-}
+/* Тема фиксированная — намеренно без @media (prefers-color-scheme: dark).
+   Раньше тёмный режим переключался у статей независимо от темы на
+   главной, и это давало два разных на вид сайта одновременно. */
 
 body { background: var(--ground); color: var(--text); font-family: var(--font-body);
   font-size: var(--t-md); line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
@@ -123,7 +125,7 @@ a { color: var(--wine); }
 .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
 .card:hover .card-img img { transform: scale(1.04); }
 .card-body { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: .55rem; flex: 1; }
-.card h3 { font-size: var(--t-lg); line-height: 1.2; }
+.card h2, .card h3 { font-size: var(--t-lg); line-height: 1.2; font-weight: 400; }
 .card p { font-size: var(--t-sm); color: var(--text-dim); }
 .card .go { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: .1em;
   font-weight: 600; color: var(--wine); margin-top: auto; padding-top: .4rem; }

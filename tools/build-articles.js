@@ -421,7 +421,7 @@ function indexPage(all) {
     <a class="card" href="/stati/${a.slug}.html">
       <div class="card-img"><img src="/img/${a.img}" alt="${esc(a.title)}" loading="lazy"></div>
       <div class="card-body">
-        <h3>${esc(a.title)}</h3>
+        <h2>${esc(a.title)}</h2>
         <p>${esc(a.lead)}</p>
         <span class="go">Читать →</span>
       </div>
