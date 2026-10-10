@@ -315,6 +315,20 @@ const FOOT = `<div class="wrap"><div class="foot">
   <span><a href="tel:+79678011501">${PHONE}</a></span>
 </div></div>`;
 
+// Блоки «Частые вопросы»: видимый текст + разметка FAQPage (данные в faq-data.js)
+const FAQ = require('./faq-data.js');
+function faqLd(slug) {
+  const f = FAQ[slug]; if (!f) return '';
+  return `<script type="application/ld+json">
+${JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: f.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }, null, 2)}
+</script>`;
+}
+function faqHtml(slug) {
+  const f = FAQ[slug]; if (!f) return '';
+  return '<h2>Частые вопросы</h2>\n' + f.map(([q, a]) => `<h3>${esc(q)}</h3>\n<p>${esc(a)}</p>`).join('\n');
+}
+
 function head(title, desc, canonical, extraLd, image, ogType) {
   const img = image || `${SITE}/img/janna.jpg`;
   return `<!DOCTYPE html>
@@ -371,7 +385,7 @@ ${JSON.stringify({
     { '@type': 'ListItem', position: 3, name: a.title, item: url }
   ]
 }, null, 2)}
-</script>`;
+</script>${faqLd(a.slug)}`;
 
   const prose = a.body.map(s =>
     `<h2>${esc(s.h2)}</h2>\n` +
@@ -393,7 +407,7 @@ ${JSON.stringify({
       </div>
     </a>`).join('');
 
-  return `${head(a.title + (a.title.includes('Саратов') ? ' | Жанна Спиридонова' : ' | Жанна Спиридонова, Саратов'), a.desc, url, ld, `${SITE}/img/${a.img}`, 'article')}
+  return `${head(a.title + (a.title.includes('Саратов') ? ' | Точка красоты' : ' — Саратов'), a.desc, url, ld, `${SITE}/img/${a.img}`, 'article')}
 
 <div class="wrap">
   <div class="crumbs"><a href="/">Главная</a> · <a href="/stati/">Статьи</a></div>
@@ -410,6 +424,7 @@ ${JSON.stringify({
   <div class="prose">
     <div class="tldr"><div class="eyebrow">Коротко</div><p>${esc(a.tldr)}</p></div>
     ${prose}
+    ${faqHtml(a.slug)}
   </div>
 
   <div class="art-cta">
@@ -529,7 +544,7 @@ ${JSON.stringify({
     { '@type': 'ListItem', position: 3, name: x.title, item: url }
   ]
 }, null, 2)}
-</script>`;
+</script>${faqLd(x.slug)}`;
 
   const prose = x.body.map(sec =>
     `<h2>${esc(sec.h2)}</h2>\n` +
@@ -565,6 +580,7 @@ ${JSON.stringify({
   <div class="prose">
     <div class="tldr"><div class="eyebrow">Коротко</div><p>${esc(x.tldr)}</p></div>
     ${prose}
+    ${faqHtml(x.slug)}
   </div>
 
   <div class="art-cta">
