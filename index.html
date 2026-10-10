@@ -275,22 +275,23 @@
 
 <!-- В ПРОЦЕССЕ -->
 <section class="sec sec-alt" id="process">
-  <div class="wrap sec-head rise">
-    <div class="eyebrow">Кухня изнутри</div>
-    <h2>В процессе работы</h2>
-    <p>Как это выглядит вживую — стерильные материалы, одноразовые модули, спокойная обстановка.</p>
+  <div class="wrap sec-head sec-head-c rise">
+    <div class="eyebrow">Как проходит процедура</div>
+    <h2>Стерильно, спокойно, без спешки</h2>
+    <p>Одноразовые модули, перчатки и маска на каждого клиента. Консультация бесплатная.</p>
   </div>
-  <div class="car-wrap">
-    <div class="car" id="car-process">
-      <div class="car-item" data-key="proc-1"><img src="img/work-1.jpg" alt="Мастер перманентного макияжа за работой, Саратов" data-img="work-1" loading="lazy"><div class="car-empty">Фото пока не загружено</div></div>
-      <div class="car-item" data-key="proc-2"><img src="img/work-2.jpg" alt="Процедура перманентного макияжа" data-img="work-2" loading="lazy"><div class="car-empty">Фото пока не загружено</div></div>
-      <div class="car-item" data-key="proc-3"><img src="img/work-3.jpg" alt="Аппарат для перманентного макияжа в руке мастера, Саратов" data-img="work-3" loading="lazy"><div class="car-empty">Фото пока не загружено</div></div>
-      <div class="car-item" data-key="proc-4"><img src="img/work-4.jpg" alt="Клиентка на процедуре перманентного макияжа бровей" data-img="work-4" loading="lazy"><div class="car-empty">Фото пока не загружено</div></div>
-      <div class="car-item" data-key="proc-5"><img src="img/work-5.jpg" alt="Студия перманентного макияжа Точка красоты, Саратов" data-img="work-5" loading="lazy"><div class="car-empty">Фото пока не загружено</div></div>
-      <div class="car-item" data-key="proc-6"><img src="img/work-6.jpg" alt="Жанна Спиридонова мастер перманентного макияжа с аппаратом" data-img="work-6" loading="lazy"><div class="car-empty">Фото пока не загружено</div></div>
-    </div>
+  <div class="mosaic rise">
+    <figure class="tile t1" data-zoom><img src="img/work-2.jpg" alt="Процедура перманентного макияжа, мастер в перчатках и маске" loading="lazy"><figcaption><b>Работа с бровями</b>Мастер в перчатках и маске</figcaption></figure>
+    <figure class="tile" data-zoom><img src="img/work-3.jpg" alt="Аппарат для перманентного макияжа в руке мастера, Саратов" loading="lazy"><figcaption><b>Аппарат</b>Одноразовый модуль</figcaption></figure>
+    <figure class="tile" data-zoom><img src="img/work-4.jpg" alt="Клиентка на процедуре перманентного макияжа бровей" loading="lazy"><figcaption><b>Результат</b>Сразу после работы</figcaption></figure>
+    <figure class="tile t5" data-zoom><img src="img/work-6.jpg" alt="Жанна Спиридонова, мастер перманентного макияжа, с аппаратом" loading="lazy" style="object-position:50% 25%"><figcaption><b>Жанна Спиридонова</b>Мастер перманентного макияжа</figcaption></figure>
   </div>
-  <div class="car-nav" id="dots-process"></div>
+  <div class="facts">
+    <div><b>Бесплатно</b>консультация</div>
+    <div><b>Одноразовые</b>модули и материалы</div>
+    <div><b>4,4 на Яндекс.Картах</b>12 отзывов клиенток</div>
+  </div>
+  <div class="lightbox" id="lightbox" hidden><img alt=""></div>
 </section>
 
 <!-- МОИ РАБОТЫ -->
@@ -573,7 +574,6 @@ function initCar(carId, dotsId) {
 
   resume();
 }
-initCar('car-process', 'dots-process');
 initCar('car-works', 'dots-works');
 
 // ── Появление при скролле ──
@@ -593,4 +593,10 @@ if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches && 'Int
 </script>
 
 
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var im=lb.querySelector('img');
+document.querySelectorAll('[data-zoom]').forEach(function(f){f.addEventListener('click',function(){var i=f.querySelector('img');im.src=i.src;im.alt=i.alt;lb.hidden=false;});});
+lb.addEventListener('click',function(){lb.hidden=true;});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.hidden=true;});})();
+</script>
 </body></html>
