@@ -277,6 +277,18 @@ const ARTICLES = [
 }
 ];
 
+// Новые партии статей лежат отдельными файлами (articles-*.js), чтобы этот файл не разрастался.
+fs.readdirSync(__dirname).filter(f => /^articles-.*.js$/.test(f)).sort()
+  .forEach(f => ARTICLES.push(...require('./' + f)));
+
+// Дата публикации: у первой партии — 2026-08-06, у остальных задаётся в самой статье.
+ARTICLES.forEach(a => { a.date = a.date || '2026-08-06'; });
+// Свежие сверху (стабильная сортировка: внутри одной даты порядок сохраняется).
+ARTICLES.sort((a, b) => b.date.localeCompare(a.date));
+
+const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const ruDate = iso => { const [y, m, d] = iso.split('-').map(Number); return d + ' ' + MONTHS[m - 1] + ' ' + y; };
+
 // ─────────────────────────────────────────────────────────────
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -344,6 +356,8 @@ ${JSON.stringify({
   author: { '@type': 'Person', name: 'Жанна Спиридонова' },
   publisher: { '@type': 'Organization', name: 'Студия «Точка красоты»' },
   mainEntityOfPage: url,
+  datePublished: a.date,
+  dateModified: a.date,
   inLanguage: 'ru-RU'
 }, null, 2)}
 </script>
@@ -360,10 +374,16 @@ ${JSON.stringify({
 </script>`;
 
   const prose = a.body.map(s =>
-    `<h2>${esc(s.h2)}</h2>\n` + s.p.map(p => `<p>${p}</p>`).join('\n')
+    `<h2>${esc(s.h2)}</h2>\n` +
+    (s.p || []).map(p => `<p>${p}</p>`).join('\n') +
+    (s.list ? '\n<ul>' + s.list.map(li => `<li>${li}</li>`).join('') + '</ul>' : '') +
+    (s.p2 || []).map(p => `\n<p>${p}</p>`).join('')
   ).join('\n\n');
 
-  const others = all.filter(x => x.slug !== a.slug).slice(0, 3).map(x => `
+  const pool = all.filter(x => x.slug !== a.slug);
+  const picked = (a.related || []).map(sl => pool.find(x => x.slug === sl)).filter(Boolean);
+  pool.forEach(x => { if (picked.length < 3 && !picked.includes(x)) picked.push(x); });
+  const others = picked.slice(0, 3).map(x => `
     <a class="card" href="/stati/${x.slug}.html">
       <div class="card-img"><img src="/img/${x.img}" alt="${esc(x.title)}" loading="lazy"></div>
       <div class="card-body">
@@ -373,7 +393,7 @@ ${JSON.stringify({
       </div>
     </a>`).join('');
 
-  return `${head(a.title + ' | Жанна Спиридонова, Саратов', a.desc, url, ld, `${SITE}/img/${a.img}`, 'article')}
+  return `${head(a.title + (a.title.includes('Саратов') ? ' | Жанна Спиридонова' : ' | Жанна Спиридонова, Саратов'), a.desc, url, ld, `${SITE}/img/${a.img}`, 'article')}
 
 <div class="wrap">
   <div class="crumbs"><a href="/">Главная</a> · <a href="/stati/">Статьи</a></div>
@@ -381,7 +401,7 @@ ${JSON.stringify({
     <div class="eyebrow">Разбор от мастера</div>
     <h1>${esc(a.title)}</h1>
     <p class="lead">${esc(a.lead)}</p>
-    <div class="art-meta">Жанна Спиридонова · перманентный макияж, Саратов</div>
+    <div class="art-meta">Жанна Спиридонова · перманентный макияж, Саратов · <time datetime="${a.date}">${ruDate(a.date)}</time></div>
   </div>
 </div>
 
@@ -457,18 +477,19 @@ fs.writeFileSync(path.join(OUT, 'index.html'), indexPage(ARTICLES), 'utf8');
 console.log('  ✓ /stati/index.html');
 
 // ── sitemap.xml ──
-const today = new Date().toISOString().slice(0, 10);
+// lastmod = реальная дата статьи; у главной и списка — самая свежая публикация
+const latest = ARTICLES.map(x => x.date).sort().pop();
 const urls = [
-  { loc: SITE + '/', pri: '1.0', freq: 'weekly' },
-  { loc: SITE + '/stati/', pri: '0.8', freq: 'weekly' },
-  ...ARTICLES.map(a => ({ loc: `${SITE}/stati/${a.slug}.html`, pri: '0.7', freq: 'monthly' }))
+  { loc: SITE + '/', pri: '1.0', freq: 'weekly', date: latest },
+  { loc: SITE + '/stati/', pri: '0.8', freq: 'weekly', date: latest },
+  ...ARTICLES.map(a => ({ loc: `${SITE}/stati/${a.slug}.html`, pri: '0.7', freq: 'monthly', date: a.date }))
 ];
 fs.writeFileSync(path.join(__dirname, '..', 'sitemap.xml'),
 `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(u => `  <url>
     <loc>${u.loc}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${u.date}</lastmod>
     <changefreq>${u.freq}</changefreq>
     <priority>${u.pri}</priority>
   </url>`).join('\n')}
