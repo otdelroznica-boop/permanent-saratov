@@ -142,3 +142,11 @@ a { color: var(--wine); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ── Страницы услуг ── */
+.price-box { display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem 1.25rem;
+  margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.price-label { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: .14em; color: var(--text-dim); font-weight: 600; }
+.price-val { font-family: var(--font-display); font-size: var(--t-xl); color: var(--wine); line-height: 1; }
+.price-note { font-size: var(--t-sm); color: var(--text-dim); }
+.card .price-line { font-family: var(--font-display); color: var(--wine); font-size: var(--t-md); }

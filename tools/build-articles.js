@@ -295,8 +295,8 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 const NAV = `<nav class="nav"><div class="nav-in">
   <a class="brand" href="/">Жанна <span>Спиридонова</span></a>
   <div class="nav-links">
-    <a href="/#services">Услуги</a>
-    <a href="/#process">Как проходит</a>
+    <a href="/uslugi/">Услуги</a>
+    <a href="/#steps">Как проходит</a>
     <a href="/stati/">Статьи</a>
     <a href="/#contacts">Контакты</a>
   </div>
@@ -477,11 +477,155 @@ fs.writeFileSync(path.join(OUT, 'index.html'), indexPage(ARTICLES), 'utf8');
 console.log('  ✓ /stati/index.html');
 
 // ── sitemap.xml ──
+// ── Страницы услуг (/uslugi/) ───────────────────────────────────
+// Для фида Яндекса («Исполнители») у каждого предложения нужна отдельная страница.
+const SERVICES = require('./services-data.js');
+const SERVICES_OUT = path.join(__dirname, '..', 'uslugi');
+fs.mkdirSync(SERVICES_OUT, { recursive: true });
+const STREET = ADDR.replace(', Саратов', '');
+
+function serviceCard(x) {
+  return `
+    <a class="card" href="/uslugi/${x.slug}.html">
+      <div class="card-img"><img src="/img/${x.img}" alt="${esc(x.title)}" loading="lazy"></div>
+      <div class="card-body">
+        <h3>${esc(x.title)}</h3>
+        <p>${esc(x.lead)}</p>
+        <p class="price-line">${esc(x.priceText)}</p>
+        <span class="go">Подробнее →</span>
+      </div>
+    </a>`;
+}
+
+function servicePage(x) {
+  const url = `${SITE}/uslugi/${x.slug}.html`;
+  const ld = `<script type="application/ld+json">
+${JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: x.title,
+  serviceType: x.serviceType,
+  description: x.desc,
+  image: `${SITE}/img/${x.img}`,
+  url,
+  areaServed: { '@type': 'City', name: 'Саратов' },
+  provider: {
+    '@type': 'BeautySalon',
+    name: 'Студия перманентного макияжа «Точка красоты»',
+    telephone: '+79678011501',
+    url: SITE + '/',
+    address: { '@type': 'PostalAddress', streetAddress: STREET, addressLocality: 'Саратов', addressCountry: 'RU' }
+  },
+  offers: { '@type': 'Offer', price: x.price, priceCurrency: 'RUB', url }
+}, null, 2)}
+</script>
+<script type="application/ld+json">
+${JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Главная', item: SITE + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Услуги', item: SITE + '/uslugi/' },
+    { '@type': 'ListItem', position: 3, name: x.title, item: url }
+  ]
+}, null, 2)}
+</script>`;
+
+  const prose = x.body.map(sec =>
+    `<h2>${esc(sec.h2)}</h2>\n` +
+    (sec.p || []).map(p => `<p>${p}</p>`).join('\n') +
+    (sec.list ? '\n<ul>' + sec.list.map(li => `<li>${li}</li>`).join('') + '</ul>' : '') +
+    (sec.p2 || []).map(p => `\n<p>${p}</p>`).join('')
+  ).join('\n\n');
+
+  const arts = (x.articles || []).map(sl => ARTICLES.find(a => a.slug === sl)).filter(Boolean).map(a => `
+    <a class="card" href="/stati/${a.slug}.html">
+      <div class="card-img"><img src="/img/${a.img}" alt="${esc(a.title)}" loading="lazy"></div>
+      <div class="card-body">
+        <h3>${esc(a.title)}</h3>
+        <p>${esc(a.lead)}</p>
+        <span class="go">Читать →</span>
+      </div>
+    </a>`).join('');
+
+  return `${head(x.title + (x.title.includes('Саратов') ? ' | Жанна Спиридонова' : ' | Жанна Спиридонова, Саратов'), x.desc, url, ld, `${SITE}/img/${x.img}`, 'website')}
+
+<div class="wrap">
+  <div class="crumbs"><a href="/">Главная</a> · <a href="/uslugi/">Услуги</a></div>
+  <div class="art-head">
+    <div class="eyebrow">Услуга · Саратов</div>
+    <h1>${esc(x.title)}</h1>
+    <p class="lead">${esc(x.lead)}</p>
+    <div class="price-box"><span class="price-label">Стоимость</span><span class="price-val">${esc(x.priceText)}</span><span class="price-note">консультация бесплатная</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="art-hero"><img src="/img/${x.img}" alt="${esc(x.title)}"></div>
+  <div class="prose">
+    <div class="tldr"><div class="eyebrow">Коротко</div><p>${esc(x.tldr)}</p></div>
+    ${prose}
+  </div>
+
+  <div class="art-cta">
+    <h3>Записаться на консультацию</h3>
+    <p>Мастер Жанна Спиридонова, студия «Точка красоты». ${ADDR}.</p>
+    <div class="row">
+      <a class="btn btn-solid" href="${DIKIDI}" target="_blank" rel="noopener">Записаться онлайн</a>
+      <a class="btn btn-line" href="tel:+79678011501">${PHONE}</a>
+    </div>
+  </div>
+</div>
+
+${SWATCHES}
+
+<section class="more"><div class="wrap">
+  <h2>Читайте по теме</h2>
+  <div class="cards">${arts}</div>
+</div></section>
+
+${FOOT}
+</body>
+</html>
+`;
+}
+
+function servicesIndex() {
+  const url = `${SITE}/uslugi/`;
+  return `${head('Услуги и цены | Жанна Спиридонова, Саратов',
+    'Услуги студии перманентного макияжа в Саратове с ценами: брови, губы, межресничка, перекрытие, удаление ремувером, бровистика. Консультация бесплатная.', url,
+    null, `${SITE}/img/gallery-1.jpg`, 'website')}
+
+<div class="wrap">
+  <div class="crumbs"><a href="/">Главная</a></div>
+  <div class="list-head">
+    <div class="eyebrow">Студия «Точка красоты»</div>
+    <h1>Услуги и цены</h1>
+    <p>Перманентный макияж и уход за бровями в Саратове. Консультация бесплатная: мастер подберёт вариант именно для вас.</p>
+  </div>
+  <div class="cards">${SERVICES.map(serviceCard).join('')}</div>
+</div>
+
+${FOOT}
+</body>
+</html>
+`;
+}
+
+SERVICES.forEach(x => {
+  fs.writeFileSync(path.join(SERVICES_OUT, x.slug + '.html'), servicePage(x), 'utf8');
+  console.log('  ✓ /uslugi/' + x.slug + '.html');
+});
+fs.writeFileSync(path.join(SERVICES_OUT, 'index.html'), servicesIndex(), 'utf8');
+console.log('  ✓ /uslugi/index.html');
+
 // lastmod = реальная дата статьи; у главной и списка — самая свежая публикация
 const latest = ARTICLES.map(x => x.date).sort().pop();
 const urls = [
   { loc: SITE + '/', pri: '1.0', freq: 'weekly', date: latest },
   { loc: SITE + '/stati/', pri: '0.8', freq: 'weekly', date: latest },
+  { loc: SITE + '/uslugi/', pri: '0.9', freq: 'monthly', date: SERVICES.map(x => x.date).sort().pop() },
+  ...SERVICES.map(x => ({ loc: `${SITE}/uslugi/${x.slug}.html`, pri: '0.9', freq: 'monthly', date: x.date })),
   ...ARTICLES.map(a => ({ loc: `${SITE}/stati/${a.slug}.html`, pri: '0.7', freq: 'monthly', date: a.date }))
 ];
 fs.writeFileSync(path.join(__dirname, '..', 'sitemap.xml'),

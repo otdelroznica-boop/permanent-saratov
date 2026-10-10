@@ -13,13 +13,13 @@
     <sets>
       <set id="permanent">
         <name>Перманентный макияж</name>
-        <url>https://permanent-saratov.ru/#services</url>
+        <url>https://permanent-saratov.ru/uslugi/</url>
       </set>
     </sets>
     <offers>
       <offer id="1">
         <name>Жанна Спиридонова — перманентный макияж бровей</name>
-        <url>https://permanent-saratov.ru/#services</url>
+        <url>https://permanent-saratov.ru/uslugi/permanentnyy-makiyazh-brovey-saratov.html</url>
         <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
         <price>8000</price>
@@ -34,7 +34,7 @@
       </offer>
       <offer id="2">
         <name>Жанна Спиридонова — перманентный макияж губ</name>
-        <url>https://permanent-saratov.ru/#services</url>
+        <url>https://permanent-saratov.ru/uslugi/permanentnyy-makiyazh-gub-saratov.html</url>
         <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
         <price>8000</price>
@@ -49,7 +49,7 @@
       </offer>
       <offer id="3">
         <name>Жанна Спиридонова — перманентный макияж век</name>
-        <url>https://permanent-saratov.ru/#services</url>
+        <url>https://permanent-saratov.ru/uslugi/permanentnyy-makiyazh-vek-saratov.html</url>
         <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
         <price>6000</price>
@@ -64,7 +64,7 @@
       </offer>
       <offer id="4">
         <name>Жанна Спиридонова — перекрытие некачественного ПМ</name>
-        <url>https://permanent-saratov.ru/#services</url>
+        <url>https://permanent-saratov.ru/uslugi/perekrytie-permanentnogo-makiyazha-saratov.html</url>
         <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
         <price>8000</price>
@@ -79,7 +79,7 @@
       </offer>
       <offer id="5">
         <name>Жанна Спиридонова — удаление перманентного макияжа</name>
-        <url>https://permanent-saratov.ru/#services</url>
+        <url>https://permanent-saratov.ru/uslugi/udalenie-permanentnogo-makiyazha-saratov.html</url>
         <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
         <price>3000</price>
@@ -94,7 +94,7 @@
       </offer>
       <offer id="6">
         <name>Жанна Спиридонова — бровистика, окрашивание бровей</name>
-        <url>https://permanent-saratov.ru/#services</url>
+        <url>https://permanent-saratov.ru/uslugi/brovistika-saratov.html</url>
         <set-ids>permanent</set-ids>
         <categoryId>1</categoryId>
         <price>1400</price>

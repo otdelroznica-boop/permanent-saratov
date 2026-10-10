@@ -171,3 +171,7 @@
   .rise { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
   .rise.in { opacity: 1; transform: none; }
 }
+
+.more-link { display: inline-block; margin-top: .9rem; font-size: var(--t-xs); text-transform: uppercase;
+  letter-spacing: .1em; font-weight: 600; color: var(--wine); text-decoration: none; }
+.more-link:hover { text-decoration: underline; }
