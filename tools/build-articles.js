@@ -8,7 +8,7 @@ const path = require('path');
 const SITE  = 'https://permanent-saratov.ru';
 const OUT   = path.join(__dirname, '..', 'stati');
 const PHONE = '8 (967) 801-15-01';
-const ADDR  = 'ул. Орджоникидзе, 1г, Саратов';
+const ADDR  = 'ул. Орджоникидзе, 1, стр. 4, офис 5, Саратов';
 const DIKIDI = 'https://dikidi.ru/1789286';
 
 // ─────────────────────────────────────────────────────────────
